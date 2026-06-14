@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>青野将大のホームページ</title>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    color:white;
+    font-family:Meiryo,sans-serif;
+    overflow:hidden;
+}
+
+/* 背景 */
+body::before{
+    content:"";
+    position:fixed;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle, rgba(0,255,255,0.1), transparent 70%);
+    animation: bgMove 10s linear infinite;
+}
+
+@keyframes bgMove{
+    from{ transform:translate(0,0);}
+    to{ transform:translate(-50%, -50%);}
+}
+
+/* コンテナ */
+.container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    text-align:center;
+}
+
+/* タイトル */
+h1{
+    font-size:70px;
+    margin:0;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow{
+    from{ text-shadow:0 0 10px cyan;}
+    to{ text-shadow:0 0 40px cyan, 0 0 80px cyan;}
+}
+
+/* メニュー */
+.menu a{
+    display:block;
+    font-size:25px;
+    margin:10px;
+    color:white;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.menu a:hover{
+    color:cyan;
+    transform:scale(1.2);
+}
+
+/* コンテンツ */
+.content{
+    display:none;
+    margin-top:20px;
+    font-size:20px;
+    line-height:1.8;
+}
+
+.active{
+    display:block;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>青野将大</h1>
+
+    <div class="menu">
+        <a href="#" onclick="show('profile')">▶ PROFILE</a>
+        <a href="#" onclick="show('hobby')">▶ HOBBY</a>
+        <a href="#" onclick="show('skill')">▶ SKILL</a>
+        <a href="#" onclick="show('contact')">▶ CONTACT</a>
+    </div>
+
+    <!-- プロフィール -->
+    <div id="profile" class="content">
+        2004年9月21日、三重県津市にて誕生。<br>
+        その後和歌山へ移り、3歳で東京・東葛西へ。<br>
+        6歳からは西葛西で生活し、現在に至る。
+    </div>
+
+    <!-- 趣味 -->
+    <div id="hobby" class="content">
+        ギター<br>
+        漫画・アニメ（最近の作品にはあまり詳しくない）<br>
+        ゲーム<br>
+        プロレス観戦<br>
+        ディズニー（パーク・映画）
+    </div>
+
+    <!-- スキル -->
+    <div id="skill" class="content">
+        ベンチプレス 100kg<br>
+        スクワット 150kg<br>
+        ルービックキューブ 42秒<br><br>
+
+        オタマトーン演奏<br>
+        カリンバ演奏<br>
+        オカリナ演奏<br>
+        ギター演奏
+    </div>
+
+    <!-- お問い合わせ -->
+    <div id="contact" class="content">
+        ご連絡はこちらまで<br>
+        shota20040921shota@gmail.com
+    </div>
+
+</div>
+
+<script>
+function show(id){
+    document.querySelectorAll(".content").forEach(el=>{
+        el.classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+}
+</script>
+
+</body>
+</html>
