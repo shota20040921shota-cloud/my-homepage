@@ -388,6 +388,30 @@ h2{
     cursor: pointer;
 }
 
+.record-card{
+    border: 3px solid #8a5a22;
+    border-radius: 12px;
+    background: rgba(255,245,210,0.75);
+    padding: 14px;
+    margin: 14px 0;
+    box-shadow:
+        inset 0 0 12px #fff8d8,
+        0 3px 8px rgba(60,30,0,0.35);
+}
+
+.record-label{
+    font-size: 16px;
+    color: #6b3b0c;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #8a5a22;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+.record-value{
+    font-size: 24px;
+}
+    
 </style>
 
 </head>
@@ -628,27 +652,28 @@ const galleryImages = Array.from({ length: 40 }, (_, i) => {
 
 const records = {
     "CHARACTER":
-`NAME
+`
+<div class="record-card">
+    <div class="record-label">NAME</div>
+    <div class="record-value">青野 将大</div>
+</div>
 
-青野 将大
+<div class="record-card">
+    <div class="record-label">BIRTH</div>
+    <div class="record-value">2004.09.21</div>
+</div>
 
-
-BIRTH
-
-2004.09.21
-
-
-TRAVEL ROUTE
-
-三重県 津市
-
-↓
-
-和歌山県
-
-↓
-
-東京都`,
+<div class="record-card">
+    <div class="record-label">TRAVEL ROUTE</div>
+    <div class="record-value">
+        三重県 津市<br>
+        ↓<br>
+        和歌山県<br>
+        ↓<br>
+        東京都
+    </div>
+</div>
+`,
 
     "HOBBY":
 `🎸 GUITAR
