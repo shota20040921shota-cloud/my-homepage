@@ -527,6 +527,26 @@ h2{
     color:white;
     animation: rareGlow 0.8s infinite alternate;
 }   
+
+    .secret-flash{
+    animation: secretFlash 0.25s alternate 8;
+}
+
+@keyframes secretFlash{
+    from{
+        background:#f2dfb1;
+    }
+    to{
+        background:gold;
+    }
+}
+
+.gacha-count{
+    margin-top:10px;
+    font-size:16px;
+    color:#5a3000;
+}
+    
 </style>
 
 </head>
@@ -975,6 +995,11 @@ ${galleryImages}
 
 <div class="item-card">
     <button class="gacha-button" onclick="rollAonoGacha()">ガチャを回す</button>
+
+    <div class="gacha-count">
+        TOTAL GACHA COUNT：<span id="gachaCount">0</span>
+    </div>
+
     <div id="gachaResult" class="gacha-result">
         まだ回されていない……
     </div>
@@ -1208,9 +1233,18 @@ const secretGacha = [
     "🌙 UR：青野はおねむ中。世界は静かになった。"
 ];
 
+let gachaTotalCount = 0;
+
 function rollAonoGacha(){
     const result = document.getElementById("gachaResult");
+    const countEl = document.getElementById("gachaCount");
     if(!result) return;
+
+    gachaTotalCount++;
+
+    if(countEl){
+        countEl.textContent = gachaTotalCount;
+    }
 
     const rate = Math.random();
 
@@ -1219,42 +1253,47 @@ function rollAonoGacha(){
     let item;
 
     if(rate < 0.01){
-        // 1% SECRET
         rarity = "🌈 SECRET";
         rarityClass = "rarity-secret";
         item = secretGacha[Math.floor(Math.random() * secretGacha.length)];
 
+        document.body.classList.add("secret-flash");
+
+        const secretSound = document.getElementById("secretSound");
+        if(secretSound){
+            secretSound.currentTime = 0;
+            secretSound.play().catch(()=>{});
+        }
+
+        setTimeout(()=>{
+            document.body.classList.remove("secret-flash");
+        }, 2000);
+
     }else if(rate < 0.05){
-        // 4% UR
         rarity = "🔥 UR";
         rarityClass = "rarity-ur";
         item = "💤 青野はおねむ中。今日は何もしない。寝ろ。";
 
     }else if(rate < 0.15){
-        // 10% SSR
         rarity = "✨ SSR";
         rarityClass = "rarity-ssr";
         item = "⚡ 青野、覚醒。今日は全部やる日。";
 
     }else if(rate < 0.35){
-        // 20% SR
         rarity = "💎 SR";
         rarityClass = "rarity-sr";
         item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
 
     }else if(rate < 0.65){
-        // 30% R
         rarity = "🔷 R";
         rarityClass = "rarity-r";
         item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
 
     }else{
-        // 35% N
         rarity = "⚪ N";
         rarityClass = "rarity-n";
         item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
     }
-
 
     result.innerHTML = `
         <div class="rarity ${rarityClass}">
@@ -1273,6 +1312,7 @@ function rollAonoGacha(){
 </script>
 
     <script async src="https://platform.twitter.com/widgets.js"></script>
+    <audio id="secretSound" src="secret.mp3"></audio>
 
 </body>
 
