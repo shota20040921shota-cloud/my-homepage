@@ -398,6 +398,38 @@ h2{
 .record-value{
     font-size: 24px;
 }
+   .record-section{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.record-card,
+.item-card{
+    border:3px solid #8a5a22;
+    border-radius:12px;
+    background:rgba(255,245,210,0.75);
+    padding:14px;
+    box-shadow:
+        inset 0 0 12px #fff8d8,
+        0 3px 8px rgba(60,30,0,0.35);
+}
+
+.record-label,
+.item-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#5a3000;
+    border-bottom:1px solid #8a5a22;
+    padding-bottom:6px;
+    margin-bottom:8px;
+}
+
+.record-value,
+.item-text{
+    font-size:18px;
+    line-height:1.7;
+} 
     
 </style>
 
@@ -662,22 +694,29 @@ ${galleryImages}
 </div>`,
 
     "ACHIEVEMENTS":
-`🏅 COMPLETED QUEST
+`
+<div class="record-section">
 
-☑ 半蔵門線 徒歩制覇
+<div class="item-card">
+    <div class="item-title">🏅 COMPLETED QUEST</div>
+    <div class="item-text">
+        ☑ 半蔵門線 徒歩制覇<br>
+        ☑ 浅草線 徒歩制覇<br>
+        ☑ 新宿線 徒歩制覇
+    </div>
+</div>
 
-☑ 浅草線 徒歩制覇
+<div class="item-card">
+    <div class="item-title">🔒 UNKNOWN QUEST</div>
+    <div class="item-text">
+        □ ???<br>
+        □ ???<br>
+        □ ???
+    </div>
+</div>
 
-☑ 新宿線 徒歩制覇
-
-
-🔒 UNKNOWN QUEST
-
-□ ???
-
-□ ???
-
-□ ???`,
+</div>
+`,
     "ITEM BOX":
 
 `
@@ -773,131 +812,96 @@ ${galleryImages}
 ━━━━━━━━━━━━
 `,
     "PERFORMANCE RECORD":
-
 `
-🎼 PERFORMANCE RECORD
+<div class="record-section">
 
+<div class="item-card">
+    <div class="item-title">🎼 PERFORMANCE RECORD</div>
+    <div class="item-text">GUITAR COVER ARCHIVE</div>
+</div>
 
-🎸 GUITAR COVER ARCHIVE
+<div class="item-card">
+    <div class="item-title">葛城リーリヤ「極光」guitar cover</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2042580005151215709"></a>
+    </blockquote>
+</div>
 
+<div class="item-card">
+    <div class="item-title">篠澤広「サンフェーデッド」guitar cover</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2042125879128813998"></a>
+    </blockquote>
+</div>
 
-━━━━━━━━━━━━
+<div class="item-card">
+    <div class="item-title">藤田ことね「世界一可愛い私」guitar cover</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2041804734814941385"></a>
+    </blockquote>
+</div>
 
+<div class="item-card">
+    <div class="item-title">葛城リーリヤ「白線」guitar cover</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2041451838915166239"></a>
+    </blockquote>
+</div>
 
-葛城リーリヤ「極光」guitar cover
+<div class="item-card">
+    <div class="item-title">「ENDLESS DANCE」（月村手毬 ver.）guitar cover</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2029170809529614540"></a>
+    </blockquote>
+</div>
 
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2042580005151215709"></a>
-</blockquote>
+<div class="item-card">
+    <div class="item-title">雨夜燕「理論武装して」Guitar Cover</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2028686040068923465"></a>
+    </blockquote>
+</div>
 
+<div class="item-card">
+    <div class="item-title">月村手毬「アイヴイ」Guitar Cover</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2028685866798031104"></a>
+    </blockquote>
+</div>
 
-━━━━━━━━━━━━
+<div class="item-card">
+    <div class="item-title">月村手毬「一体いつから」Guitar Cover - 練習記録 -</div>
+    <blockquote class="twitter-tweet">
+        <a href="https://x.com/sokuten_tema/status/2012425077648679046"></a>
+    </blockquote>
+</div>
 
-
-篠澤広「サンフェーデッド」guitar cover
-
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2042125879128813998"></a>
-</blockquote>
-
-
-━━━━━━━━━━━━
-
-
-藤田ことね「世界一可愛い私」guitar cover
-
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2041804734814941385"></a>
-</blockquote>
-
-
-━━━━━━━━━━━━
-
-
-葛城リーリヤ「白線」guitar cover
-
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2041451838915166239"></a>
-</blockquote>
-
-
-━━━━━━━━━━━━
-
-
-「ENDLESS DANCE」
-（月村手毬 ver.）
-guitar cover
-
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2029170809529614540"></a>
-</blockquote>
-
-
-━━━━━━━━━━━━
-
-
-雨夜燕「理論武装して」
-Guitar Cover
-
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2028686040068923465"></a>
-</blockquote>
-
-
-━━━━━━━━━━━━
-
-
-月村手毬「アイヴイ」
-Guitar Cover
-
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2028685866798031104"></a>
-</blockquote>
-
-
-━━━━━━━━━━━━
-
-
-月村手毬「一体いつから」
-Guitar Cover - 練習記録 -
-
-<blockquote class="twitter-tweet">
-<a href="https://x.com/sokuten_tema/status/2012425077648679046"></a>
-</blockquote>
-
-
-━━━━━━━━━━━━
+</div>
 `,
 
     "MESSAGE BOARD":
-
 `
-📬 MESSAGE BOARD
+<div class="record-section">
 
+<div class="item-card">
+    <div class="item-title">📬 MAIL</div>
+    <div class="item-text">ta7579137@gmail.com</div>
+</div>
 
-MAIL
+<div class="item-card">
+    <div class="item-title">🐦 X / Twitter</div>
+    <div class="item-text">@sokuten_tema</div>
+</div>
 
-ta7579137@gmail.com
+<div class="item-card">
+    <div class="item-title">MESSAGE</div>
+    <div class="item-text">
+        御用の方は上記の連絡先まで。<br>
+        年中無休 365日24時間受付中。
+    </div>
+</div>
 
-
-━━━━━━━━━━━━
-
-
-🐦 X (Twitter)
-
-@sokuten_tema
-
-
-━━━━━━━━━━━━
-
-
-御用の方は
-上記の連絡先まで。
-
-
-年中無休
-
-365日24時間受付中。
+</div>
 `,
     "UPDATE LOG":
 
