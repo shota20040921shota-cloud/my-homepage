@@ -785,6 +785,21 @@ document.addEventListener("keydown", (e) => {
 });
 
 updateMenu();
+
+let secretCode = "";
+
+document.addEventListener("keydown", (e) => {
+    secretCode += e.key.toLowerCase();
+
+    if (secretCode.includes("onemu")) {
+        location.href = "onemu-game.html";
+    }
+
+    if (secretCode.length > 20) {
+        secretCode = "";
+    }
+});
+    
 </script>
 
 
