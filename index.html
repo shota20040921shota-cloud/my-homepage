@@ -1260,10 +1260,15 @@ function rollAonoGacha(){
         document.body.classList.add("secret-flash");
 
         const secretSound = document.getElementById("secretSound");
-        if(secretSound){
-            secretSound.currentTime = 0;
-            secretSound.play().catch(()=>{});
-        }
+
+if(secretSound){
+    secretSound.volume = 1.0;
+    secretSound.currentTime = 0;
+
+    secretSound.play().catch((e)=>{
+        console.log("音が再生できませんでした", e);
+    });
+}
 
         setTimeout(()=>{
             document.body.classList.remove("secret-flash");
