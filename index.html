@@ -346,7 +346,47 @@ h2{
 
 }
 
+.gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
 
+    max-height: 500px;
+    overflow-y: auto;
+
+    padding: 10px;
+}
+
+
+.gallery-grid img {
+
+    width: 180px;
+    height: 250px;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+
+    border: 3px solid #8a5a22;
+
+    box-shadow:
+        0 0 10px rgba(0,0,0,0.5);
+
+    transition: 0.2s;
+}
+
+
+/* マウスを乗せた時 */
+.gallery-grid img:hover {
+
+    transform: scale(1.1);
+
+    box-shadow:
+        0 0 20px #fff3a0;
+
+    cursor: pointer;
+}
 
 </style>
 
