@@ -98,10 +98,10 @@ body{
 
 .left{
     width:30%;
+    height:100%;
     overflow-y:auto;
     padding-right:5px;
 }
-
 
 .right{
 
@@ -225,21 +225,9 @@ h2{
 
 
 .menu-item{
-
-    font-size:26px;
-
-    padding:10px;
-
-    margin:8px 0;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    transition:
-    0.2s;
-
-}
+    font-size:20px;
+    padding:6px;
+    margin:4px 0;
 
 
 /* 選択中 */
@@ -545,7 +533,11 @@ GALLERY
 <div class="menu-item">
 ACHIEVEMENTS
 </div>
-
+    
+<div class="menu-item">
+PERFORMANCE RECORD
+</div>
+    
 <div class="menu-item">
 MESSAGE BOARD
 </div>
@@ -795,6 +787,102 @@ ${galleryImages}
 
 ━━━━━━━━━━━━
 `,
+    "PERFORMANCE RECORD":
+
+`
+🎼 PERFORMANCE RECORD
+
+
+🎸 GUITAR COVER ARCHIVE
+
+
+━━━━━━━━━━━━
+
+
+葛城リーリヤ「極光」guitar cover
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2042580005151215709"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+
+
+篠澤広「サンフェーデッド」guitar cover
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2042125879128813998"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+
+
+藤田ことね「世界一可愛い私」guitar cover
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2041804734814941385"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+
+
+葛城リーリヤ「白線」guitar cover
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2041451838915166239"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+
+
+「ENDLESS DANCE」
+（月村手毬 ver.）
+guitar cover
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2029170809529614540"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+
+
+雨夜燕「理論武装して」
+Guitar Cover
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2028686040068923465"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+
+
+月村手毬「アイヴイ」
+Guitar Cover
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2028685866798031104"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+
+
+月村手毬「一体いつから」
+Guitar Cover - 練習記録 -
+
+<blockquote class="twitter-tweet">
+<a href="https://x.com/sokuten_tema/status/2012425077648679046"></a>
+</blockquote>
+
+
+━━━━━━━━━━━━
+`,
 
     "MESSAGE BOARD":
 
@@ -909,7 +997,13 @@ function openRecord() {
         .replace("▶ ", "")
         .trim();
 
-    document.getElementById("content").innerHTML = records[name];
+    const content = document.getElementById("content");
+
+    content.innerHTML = records[name];
+
+    if (window.twttr) {
+        twttr.widgets.load(content);
+    }
 }
 
 menuItems.forEach((item, index) => {
