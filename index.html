@@ -487,7 +487,46 @@ h2{
         text-shadow:0 0 25px red, 0 0 40px gold;
     }
 }
-    
+ .rarity{
+    display:inline-block;
+    padding:4px 12px;
+    border-radius:999px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.rarity-n{
+    background:#ddd;
+    color:#333;
+}
+
+.rarity-r{
+    background:#9fd3ff;
+    color:#003b66;
+}
+
+.rarity-sr{
+    background:#d6a4ff;
+    color:#3b0066;
+}
+
+.rarity-ssr{
+    background:#ffd36a;
+    color:#5a3000;
+    box-shadow:0 0 12px gold;
+}
+
+.rarity-ur{
+    background:linear-gradient(90deg, gold, orange, red);
+    color:white;
+    box-shadow:0 0 18px gold;
+}
+
+.rarity-secret{
+    background:linear-gradient(90deg, red, purple, blue, gold);
+    color:white;
+    animation: rareGlow 0.8s infinite alternate;
+}   
 </style>
 
 </head>
@@ -1173,22 +1212,64 @@ function rollAonoGacha(){
     const result = document.getElementById("gachaResult");
     if(!result) return;
 
-    const isSecret = Math.random() < 0.01;
+    const rate = Math.random();
 
-    if(isSecret){
-        const item = secretGacha[Math.floor(Math.random() * secretGacha.length)];
-        result.innerHTML = `
-            <div class="item-title gacha-rare">✨ SECRET RESULT ✨</div>
-            <div class="item-text">${item}</div>
-        `;
+    let rarity;
+    let rarityClass;
+    let item;
+
+    if(rate < 0.01){
+        // 1% SECRET
+        rarity = "🌈 SECRET";
+        rarityClass = "rarity-secret";
+        item = secretGacha[Math.floor(Math.random() * secretGacha.length)];
+
+    }else if(rate < 0.05){
+        // 4% UR
+        rarity = "🔥 UR";
+        rarityClass = "rarity-ur";
+        item = "💤 青野はおねむ中。今日は何もしない。寝ろ。";
+
+    }else if(rate < 0.15){
+        // 10% SSR
+        rarity = "✨ SSR";
+        rarityClass = "rarity-ssr";
+        item = "⚡ 青野、覚醒。今日は全部やる日。";
+
+    }else if(rate < 0.35){
+        // 20% SR
+        rarity = "💎 SR";
+        rarityClass = "rarity-sr";
+        item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
+
+    }else if(rate < 0.65){
+        // 30% R
+        rarity = "🔷 R";
+        rarityClass = "rarity-r";
+        item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
+
     }else{
-        const item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
-        result.innerHTML = `
-            <div class="item-title">今日の青野は……</div>
-            <div class="item-text">${item}</div>
-        `;
+        // 35% N
+        rarity = "⚪ N";
+        rarityClass = "rarity-n";
+        item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
     }
-}   
+
+
+    result.innerHTML = `
+        <div class="rarity ${rarityClass}">
+            ${rarity}
+        </div>
+
+        <div class="item-title">
+            今日の青野は……
+        </div>
+
+        <div class="item-text">
+            ${item}
+        </div>
+    `;
+}
 </script>
 
     <script async src="https://platform.twitter.com/widgets.js"></script>
