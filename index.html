@@ -446,6 +446,47 @@ h2{
     color:#b45f00;
     text-shadow:0 0 8px #ffe6a0;
 }
+
+.gacha-button{
+    display:block;
+    margin:20px auto;
+    padding:12px 25px;
+    font-size:20px;
+    font-family:inherit;
+    color:#fff5d0;
+    background:#8b5a20;
+    border:3px solid #5a3000;
+    border-radius:12px;
+    cursor:pointer;
+    box-shadow:0 4px 0 #3a2200;
+}
+
+.gacha-button:hover{
+    background:#a96e25;
+    box-shadow:0 0 15px #fff4a0;
+}
+
+.gacha-button:active{
+    transform:translateY(4px);
+    box-shadow:inset 0 0 10px #000;
+}
+
+.gacha-result{
+    margin-top:20px;
+}
+
+.gacha-rare{
+    animation: rareGlow 1s infinite alternate;
+}
+
+@keyframes rareGlow{
+    from{
+        text-shadow:0 0 8px gold;
+    }
+    to{
+        text-shadow:0 0 25px red, 0 0 40px gold;
+    }
+}
     
 </style>
 
@@ -576,6 +617,7 @@ DAYS
 <div class="menu-item">GALLERY</div>
 <div class="menu-item">PERFORMANCE RECORD</div>
 <div class="menu-item">ACHIEVEMENTS</div>
+<div class="menu-item">AONO GACHA</div>
 <div class="menu-item">MESSAGE BOARD</div>
 <div class="menu-item">UPDATE LOG</div>
 
@@ -880,7 +922,27 @@ ${galleryImages}
 
 </div>
 `,
+"AONO GACHA":
+`
+<div class="record-section">
 
+<div class="item-card">
+    <div class="item-title">🎰 AONO GACHA</div>
+    <div class="item-text">
+        今日の青野を占う謎の装置。<br>
+        1%の確率で伝説が起きる。
+    </div>
+</div>
+
+<div class="item-card">
+    <button class="gacha-button" onclick="rollAonoGacha()">ガチャを回す</button>
+    <div id="gachaResult" class="gacha-result">
+        まだ回されていない……
+    </div>
+</div>
+
+</div>
+`,
     "MESSAGE BOARD":
 `
 <div class="record-section">
@@ -1023,7 +1085,99 @@ document.addEventListener("keydown", (e) => {
         secretCode = "";
     }
 });
-    
+ const normalGacha = [
+    "🎮 OWでラインハルトを使う",
+    "🎮 OWでゲンジを使う",
+    "🎮 OWでサポート専になる",
+    "🎮 OWで普段使わないヒーロー縛り",
+    "🎮 OWで3連勝するまで終われない",
+    "🎮 新しいゲームを1本プレイする",
+    "🎮 積みゲーを崩す",
+    "🎮 Steamのライブラリを漁る",
+    "🎮 Minecraftで家を作る",
+    "🎮 Minecraftで無駄な装置を作る",
+    "🎮 VALORANTでエイム練習",
+    "🎮 カードゲームで新デッキ作成",
+
+    "💪 胸トレの日",
+    "💪 脚トレの日。逃げるな。",
+    "💪 背中を鍛える",
+    "💪 腕をパンパンにする",
+    "💪 腹筋100回チャレンジ",
+    "💪 ストレッチだけでも偉い",
+    "💪 30分ウォーキング",
+    "💪 階段を使う",
+    "💪 タンパク質を多く摂取する",
+    "💪 今日はチートデイ……ではない",
+
+    "🎸 ギター練習30分",
+    "🎸 新しい曲を耳コピする",
+    "🎸 速弾き練習",
+    "🎸 好きな曲を1曲完走する",
+    "🎸 オタマトーンを演奏する",
+    "🎸 カリンバを触る",
+    "🎸 オカリナで1曲吹く",
+    "🎸 演奏動画を撮る",
+    "🎸 音作りにこだわる",
+
+    "🏰 ディズニー映画を見る",
+    "🏰 パークBGMを聴く",
+    "🏰 新グッズを調べる",
+    "🏰 過去の写真を見返す",
+    "🏰 次のインパ計画を立てる",
+
+    "🤼 名勝負を1試合見る",
+    "🤼 入場曲だけ聴く",
+    "🤼 推しレスラーの試合を見る",
+    "🤼 マイクパフォーマンスを見る",
+
+    "🍖 チャーシューを作る",
+    "🍖 新しい料理に挑戦する",
+    "🍖 冷蔵庫の余り物で勝負する",
+
+    "🧩 ルービックキューブ自己ベスト更新を狙う",
+    "🧹 部屋を掃除する",
+    "💧 水を2L飲む",
+    "📚 本を読む",
+    "🚶 散歩する",
+    "🧠 新しい知識を1つ学ぶ",
+    "📺 YouTubeのおすすめを開く",
+    "💤 早寝する"
+];
+
+const secretGacha = [
+    "🌈 LEGENDARY DROP：青野、覚醒。今日の行動：全部やる。",
+    "💤 UR：今日は何もしない。寝ろ。",
+    "🏰 UR：今すぐ夢の国に行く準備をする。",
+    "🎸 UR：気づいたら演奏動画を投稿している。",
+    "💪 UR：筋トレ後に全てを理解する。",
+    "🎮 UR：OWで謎に全部勝つ日。",
+    "🧩 UR：ルービックキューブが突然20秒台になる幻覚を見る。",
+    "🍖 UR：チャーシューが過去最高傑作になる。",
+    "🤼 UR：入場曲を聴いただけでテンションMAX。",
+    "🌙 UR：青野はおねむ中。世界は静かになった。"
+];
+
+function rollAonoGacha(){
+    const result = document.getElementById("gachaResult");
+    if(!result) return;
+
+    const isSecret = Math.random() < 0.01;
+
+    if(isSecret){
+        const item = secretGacha[Math.floor(Math.random() * secretGacha.length)];
+        result.innerHTML = `
+            <div class="item-title gacha-rare">✨ SECRET RESULT ✨</div>
+            <div class="item-text">${item}</div>
+        `;
+    }else{
+        const item = normalGacha[Math.floor(Math.random() * normalGacha.length)];
+        result.innerHTML = `
+            <div class="item-title">今日の青野は……</div>
+            <div class="item-text">${item}</div>
+        `;
+    }
+}   
 </script>
 
     <script async src="https://platform.twitter.com/widgets.js"></script>
