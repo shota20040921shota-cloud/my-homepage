@@ -1252,7 +1252,7 @@ function rollAonoGacha(){
     let rarityClass;
     let item;
 
-    if(rate < 0.01){
+    if(rate < 1){
         rarity = "🌈 SECRET";
         rarityClass = "rarity-secret";
         item = secretGacha[Math.floor(Math.random() * secretGacha.length)];
