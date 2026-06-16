@@ -564,76 +564,30 @@ SAVE DATA 001
 
 </div>
 <script>
-
-
-// ======================
-// LEVEL & PLAY TIME
-// ======================
-
-
 const birth = new Date(2004, 8, 21);
-
 const today = new Date();
 
+let level = today.getFullYear() - birth.getFullYear();
 
-// LEVEL = 年齢
-
-
-let level =
-today.getFullYear()
--
-birth.getFullYear();
-
-
-if(
-today.getMonth() < birth.getMonth()
-||
-(
-today.getMonth() === birth.getMonth()
-&&
-today.getDate() < birth.getDate()
-)
-){
-
-level--;
-
+if (
+    today.getMonth() < birth.getMonth() ||
+    (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())
+) {
+    level--;
 }
 
+document.getElementById("level").textContent = level;
 
-document.getElementById("level")
-.textContent = level;
+const days = Math.floor((today - birth) / (1000 * 60 * 60 * 24));
+document.getElementById("days").textContent = days;
 
-
-
-// PLAY TIME = 生まれてからの日数
-
-
-const days = Math.floor(
-
-(today - birth)
-
-/
-
-(1000*60*60*24)
-
-);
-
-
-document.getElementById("days")
-.textContent = days;
-
-
-
-// ======================
-// RECORD DATA
-// ======================
-
+const galleryImages = Array.from({ length: 40 }, (_, i) => {
+    const num = String(i + 1).padStart(3, "0");
+    return `<img src="dis/disney${num}.jpg" alt="Disney ${num}">`;
+}).join("");
 
 const records = {
-
-
-"CHARACTER":
-
+    "CHARACTER":
 `NAME
 
 青野 将大
@@ -646,7 +600,6 @@ BIRTH
 
 TRAVEL ROUTE
 
-
 三重県 津市
 
 ↓
@@ -657,12 +610,7 @@ TRAVEL ROUTE
 
 東京都`,
 
-
-
-
-
-"HOBBY":
-
+    "HOBBY":
 `🎸 GUITAR
 
 🎮 GAME
@@ -671,13 +619,7 @@ TRAVEL ROUTE
 
 🏰 DISNEY`,
 
-
-
-
-
-
-"SKILL":
-
+    "SKILL":
 `オタマトーン
 
 カリンバ
@@ -689,19 +631,17 @@ TRAVEL ROUTE
 
 🏋 SQUAT 150kg
 
-
 🧩 RUBIK'S CUBE 42 sec`,
 
+    "GALLERY":
+`🏰 DISNEY MEMORIES
 
+<div class="gallery-grid">
+${galleryImages}
+</div>`,
 
-
-
-
-
-"ACHIEVEMENTS":
-
+    "ACHIEVEMENTS":
 `🏅 COMPLETED QUEST
-
 
 ☑ 半蔵門線 徒歩制覇
 
@@ -710,9 +650,7 @@ TRAVEL ROUTE
 ☑ 新宿線 徒歩制覇
 
 
-
 🔒 UNKNOWN QUEST
-
 
 □ ???
 
@@ -720,278 +658,68 @@ TRAVEL ROUTE
 
 □ ???`,
 
-
-
-
-
-
-
-"MESSAGE BOARD":
-
+    "MESSAGE BOARD":
 `📬 CONTACT
-
 
 ta7579137@gmail.com
 
 
 御用の方は上記のアドレスまで。
 
-
 年中無休
+365日24時間受付中。`
+};
 
-365日24時間受付中。`,
-
-
-
-
-
-
-
-"GALLERY":
-
-`
-🏰 DISNEY MEMORIES
-
-<div class="gallery-grid">
-
-<img src="dis/disney001.jpg">
-<img src="dis/disney002.jpg">
-<img src="dis/disney003.jpg">
-<img src="dis/disney004.jpg">
-<img src="dis/disney005.jpg">
-<img src="dis/disney006.jpg">
-<img src="dis/disney007.jpg">
-<img src="dis/disney008.jpg">
-<img src="dis/disney009.jpg">
-<img src="dis/disney010.jpg">
-
-<img src="dis/disney011.jpg">
-<img src="dis/disney012.jpg">
-<img src="dis/disney013.jpg">
-<img src="dis/disney014.jpg">
-<img src="dis/disney015.jpg">
-<img src="dis/disney016.jpg">
-<img src="dis/disney017.jpg">
-<img src="dis/disney018.jpg">
-<img src="dis/disney019.jpg">
-<img src="dis/disney020.jpg">
-
-<img src="dis/disney021.jpg">
-<img src="dis/disney022.jpg">
-<img src="dis/disney023.jpg">
-<img src="dis/disney024.jpg">
-<img src="dis/disney025.jpg">
-<img src="dis/disney026.jpg">
-<img src="dis/disney027.jpg">
-<img src="dis/disney028.jpg">
-<img src="dis/disney029.jpg">
-<img src="dis/disney030.jpg">
-
-<img src="dis/disney031.jpg">
-<img src="dis/disney032.jpg">
-<img src="dis/disney033.jpg">
-<img src="dis/disney034.jpg">
-<img src="dis/disney035.jpg">
-<img src="dis/disney036.jpg">
-<img src="dis/disney037.jpg">
-<img src="dis/disney038.jpg">
-<img src="dis/disney039.jpg">
-<img src="dis/disney040.jpg">
-</div>
-`
-
-// ======================
-// MENU SYSTEM
-// ======================
-
-
-const menuItems =
-document.querySelectorAll(".menu-item");
-
-
+const menuItems = document.querySelectorAll(".menu-item");
 let selectedIndex = 0;
 
+function updateMenu() {
+    menuItems.forEach(item => {
+        item.classList.remove("selected");
+        item.textContent = item.textContent.replace("▶ ", "");
+    });
 
+    menuItems[selectedIndex].classList.add("selected");
+    menuItems[selectedIndex].textContent =
+        "▶ " + menuItems[selectedIndex].textContent;
+}
 
-// カーソル更新
+function openRecord() {
+    const name = menuItems[selectedIndex]
+        .textContent
+        .replace("▶ ", "")
+        .trim();
 
-function updateMenu(){
+    document.getElementById("content").innerHTML = records[name];
+}
 
-
-menuItems.forEach(item=>{
-
-
-item.classList.remove("selected");
-
-
-item.textContent =
-item.textContent.replace("▶ ","");
-
-
+menuItems.forEach((item, index) => {
+    item.addEventListener("click", () => {
+        selectedIndex = index;
+        updateMenu();
+        openRecord();
+    });
 });
 
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp") {
+        selectedIndex--;
+        if (selectedIndex < 0) selectedIndex = menuItems.length - 1;
+        updateMenu();
+    }
 
+    if (e.key === "ArrowDown") {
+        selectedIndex++;
+        if (selectedIndex >= menuItems.length) selectedIndex = 0;
+        updateMenu();
+    }
 
-menuItems[selectedIndex]
-.classList.add("selected");
-
-
-menuItems[selectedIndex]
-.textContent =
-"▶ "
-+
-menuItems[selectedIndex]
-.textContent;
-
-
-}
-
-
-
-// RECORDを開く
-
-function openRecord(){
-
-
-const name =
-menuItems[selectedIndex]
-.textContent
-.replace("▶ ","")
-.trim();
-
-
-
-document.getElementById("content")
-.innerHTML =
-records[name];
-
-
-}
-
-
-
-// ======================
-// クリック操作
-// ======================
-
-
-menuItems.forEach(
-(item,index)=>{
-
-
-item.addEventListener(
-"click",
-function(){
-
-
-selectedIndex = index;
-
-
-updateMenu();
-
-
-openRecord();
-
-
+    if (e.key === "Enter") {
+        openRecord();
+    }
 });
 
-
-});
-
-
-
-
-// ======================
-// キーボード操作
-// ======================
-
-
-document.addEventListener(
-"keydown",
-function(e){
-
-
-
-// 上
-
-if(
-e.key==="ArrowUp"
-){
-
-
-selectedIndex--;
-
-
-if(
-selectedIndex<0
-){
-
-selectedIndex =
-menuItems.length-1;
-
-
-}
-
-
 updateMenu();
-
-
-}
-
-
-
-// 下
-
-else if(
-e.key==="ArrowDown"
-){
-
-
-selectedIndex++;
-
-
-if(
-selectedIndex >=
-menuItems.length
-){
-
-
-selectedIndex = 0;
-
-
-}
-
-
-updateMenu();
-
-
-}
-
-
-
-// 決定
-
-else if(
-e.key==="Enter"
-){
-
-
-openRecord();
-
-
-}
-
-
-});
-
-
-/*
-初期表示
-*/
-
-updateMenu();
-
-
 </script>
 
 
