@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>青野はおねむ中 シューティング</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+    font-family: sans-serif;
+    color: white;
+}
+
+#ui {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    z-index: 10;
+}
+
+.enemy, .boss {
+    position: absolute;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    text-shadow: 0 0 10px currentColor;
+}
+
+.enemy {
+    font-size: 30px;
+}
+
+.boss {
+    font-size: 80px;
+}
+
+.hpbar {
+    position: absolute;
+    height: 12px;
+    background: red;
+    z-index: 5;
+}
+
+#result {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    z-index: 100;
+    text-align: center;
+    padding-top: 180px;
+}
+
+#result h1 {
+    font-size: 60px;
+}
+
+button {
+    font-size: 22px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+スコア: <span id="score">0</span><br>
+残り時間: <span id="time">120</span>秒
+</div>
+
+<div id="result">
+    <h1>RESULT</h1>
+    <p>最終スコア: <span id="finalScore">0</span></p>
+    <p id="rank"></p>
+    <button onclick="location.reload()">もう一度遊ぶ</button>
+    <button onclick="location.href='index.html'">記録書に戻る</button>
+</div>
+
+<script>
+let score = 0;
+let time = 120;
+let speed = 2;
+let bossActive = false;
+let gameOver = false;
+
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const result = document.getElementById("result");
+const finalScore = document.getElementById("finalScore");
+const rankEl = document.getElementById("rank");
+
+function createEnemy() {
+    if (bossActive || gameOver) return;
+
+    const el = document.createElement("div");
+    el.className = "enemy";
+    el.textContent = "青野はおねむ中";
+
+    el.x = Math.random() * (window.innerWidth - 220);
+    el.y = Math.random() * (window.innerHeight - 80);
+
+    el.vx = (Math.random() - 0.5) * speed * 2;
+    el.vy = (Math.random() - 0.5) * speed * 2;
+
+    el.style.color = `hsl(${Math.random()*360},100%,60%)`;
+
+    el.addEventListener("click", () => {
+        if (gameOver) return;
+        score++;
+        scoreEl.textContent = score;
+        el.remove();
+        createEnemy();
+    });
+
+    document.body.appendChild(el);
+    moveEnemy(el);
+}
+
+function spawnBoss() {
+    if (gameOver || bossActive) return;
+
+    bossActive = true;
+
+    document.querySelectorAll(".enemy").forEach(e => e.remove());
+
+    const boss = document.createElement("div");
+    boss.className = "boss";
+    boss.textContent = "💤青野はおねむ中💤";
+
+    boss.x = window.innerWidth / 2 - 250;
+    boss.y = window.innerHeight / 2 - 80;
+    boss.vx = 4;
+    boss.vy = 4;
+    boss.hp = 50;
+
+    boss.style.color = "red";
+
+    const hpbar = document.createElement("div");
+    hpbar.className = "hpbar";
+    hpbar.style.width = boss.hp * 5 + "px";
+    document.body.appendChild(hpbar);
+
+    boss.addEventListener("click", () => {
+        if (gameOver) return;
+
+        boss.hp--;
+        hpbar.style.width = boss.hp * 5 + "px";
+
+        score += 1;
+        scoreEl.textContent = score;
+
+        if (boss.hp <= 0) {
+            boss.remove();
+            hpbar.remove();
+
+            bossActive = false;
+            score += 20;
+            scoreEl.textContent = score;
+
+            for (let i = 0; i < 5; i++) createEnemy();
+        }
+    });
+
+    document.body.appendChild(boss);
+
+    function moveBoss() {
+        if (gameOver || !document.body.contains(boss)) return;
+
+        boss.x += boss.vx;
+        boss.y += boss.vy;
+
+        if (boss.x < 0 || boss.x > window.innerWidth - 500) boss.vx *= -1;
+        if (boss.y < 0 || boss.y > window.innerHeight - 120) boss.vy *= -1;
+
+        boss.style.transform = `translate(${boss.x}px, ${boss.y}px)`;
+
+        hpbar.style.left = boss.x + "px";
+        hpbar.style.top = (boss.y - 20) + "px";
+
+        requestAnimationFrame(moveBoss);
+    }
+
+    moveBoss();
+}
+
+function moveEnemy(el) {
+    function update() {
+        if (gameOver || !document.body.contains(el)) return;
+
+        el.x += el.vx;
+        el.y += el.vy;
+
+        if (el.x < 0 || el.x > window.innerWidth - 220) el.vx *= -1;
+        if (el.y < 0 || el.y > window.innerHeight - 60) el.vy *= -1;
+
+        el.style.transform = `translate(${el.x}px, ${el.y}px)`;
+
+        requestAnimationFrame(update);
+    }
+
+    update();
+}
+
+for (let i = 0; i < 5; i++) createEnemy();
+
+const timer = setInterval(() => {
+    if (gameOver) return;
+
+    time--;
+    timeEl.textContent = time;
+
+    if (time <= 0) {
+        endGame();
+    }
+}, 1000);
+
+const bossTimer = setInterval(() => {
+    if (!bossActive && !gameOver) {
+        spawnBoss();
+    }
+}, 30000);
+
+function endGame() {
+    gameOver = true;
+
+    clearInterval(timer);
+    clearInterval(bossTimer);
+
+    document.querySelectorAll(".enemy, .boss, .hpbar").forEach(e => e.remove());
+
+    finalScore.textContent = score;
+
+    if (score >= 120) {
+        rankEl.textContent = "称号：睡眠の支配者";
+    } else if (score >= 70) {
+        rankEl.textContent = "称号：快眠マスター";
+    } else {
+        rankEl.textContent = "称号：眠い人";
+    }
+
+    result.style.display = "block";
+}
+</script>
+
+</body>
+</html>
