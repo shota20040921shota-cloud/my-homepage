@@ -612,6 +612,57 @@ h2{
     box-shadow:
         0 0 20px #fff3a0;
 }
+
+.aono-card,
+.collection-card{
+    border:4px solid #8a5a22;
+    border-radius:16px;
+    background:rgba(255,245,210,0.9);
+    padding:18px;
+    margin-top:15px;
+    box-shadow:
+        inset 0 0 15px #fff8d8,
+        0 0 15px rgba(60,30,0,0.5);
+    text-align:center;
+}
+
+.card-no{
+    font-size:15px;
+    opacity:0.8;
+    margin-top:8px;
+}
+
+.card-name{
+    font-size:24px;
+    font-weight:bold;
+    margin:12px 0;
+}
+
+.card-text{
+    font-size:18px;
+    line-height:1.7;
+}
+
+.card-status{
+    margin-top:12px;
+    font-weight:bold;
+    color:#8b3f00;
+}
+
+.collection-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:14px;
+}
+
+.locked-card{
+    filter:grayscale(1);
+    opacity:0.55;
+}
+
+.locked-card .card-name{
+    letter-spacing:4px;
+}
     
 </style>
 
@@ -765,6 +816,10 @@ ACHIEVEMENTS
 
 <div class="menu-item">
 AONO GACHA
+</div>
+    
+    <div class="menu-item">
+AONO COLLECTION
 </div>
 
 <div class="menu-item">
@@ -1331,24 +1386,42 @@ ${galleryImages}
 <div class="record-section">
 
 <div class="item-card">
-    <div class="item-title">🎰 AONO GACHA</div>
+    <div class="item-title">🎰 AONO GACHA 2.0</div>
     <div class="item-text">
-        今日の青野を占う謎の装置。<br>
-        1%の確率で伝説が起きる。
+        青野の姿をカードとして記録する謎の装置。<br>
+        引いたカードはCOLLECTIONに保存される。
     </div>
 </div>
 
 <div class="item-card">
-    <button class="gacha-button" onclick="rollAonoGacha()">ガチャを回す</button>
-
-    <div class="gacha-count">
-        TOTAL GACHA COUNT：<span id="gachaCount">0</span>
+    <div class="item-text">
+        TOTAL GACHA：<span id="gachaCount">0</span><br>
+        SOUL：<span id="aonoSoul">0</span><br>
+        COLLECTION：<span id="collectionRate">0 / 0</span>
     </div>
+
+    <button class="gacha-button" onclick="rollAonoGacha()">ガチャを回す</button>
 
     <div id="gachaResult" class="gacha-result">
         まだ回されていない……
     </div>
 </div>
+
+</div>
+`,
+
+"AONO COLLECTION":
+`
+<div class="record-section">
+
+<div class="item-card">
+    <div class="item-title">📚 AONO COLLECTION</div>
+    <div class="item-text">
+        獲得した青野カードの記録。
+    </div>
+</div>
+
+<div id="collectionList"></div>
 
 </div>
 `,
@@ -1494,6 +1567,14 @@ function openRecord() {
 
     content.innerHTML = records[name];
 
+    if(name === "AONO GACHA"){
+        updateGachaInfo();
+    }
+
+    if(name === "AONO COLLECTION"){
+        renderAonoCollection();
+    }
+
     if (window.twttr) {
         twttr.widgets.load(content);
     }
@@ -1540,78 +1621,1057 @@ document.addEventListener("keydown", (e) => {
         secretCode = "";
     }
 });
- const normalGacha = [
-    "🎮 OWでラインハルトを使う",
-    "🎮 OWでゲンジを使う",
-    "🎮 OWでサポート専になる",
-    "🎮 OWで普段使わないヒーロー縛り",
-    "🎮 OWで3連勝するまで終われない",
-    "🎮 新しいゲームを1本プレイする",
-    "🎮 積みゲーを崩す",
-    "🎮 Steamのライブラリを漁る",
-    "🎮 Minecraftで家を作る",
-    "🎮 Minecraftで無駄な装置を作る",
-    "🎮 VALORANTでエイム練習",
-    "🎮 カードゲームで新デッキ作成",
+ const aonoCards = [
+{
+id:1,
+rarity:"N",
+name:"🎮 OWタンク青野",
+text:"仲間を守る盾。今日も最前線に立つ。"
+},
+{
+id:2,
+rarity:"N",
+name:"🗡 OWゲンジ青野",
+text:"龍神の剣を抜きたい日。成功するとは言っていない。"
+},
+{
+id:3,
+rarity:"N",
+name:"💉 OWサポート青野",
+text:"味方を支え、戦場全体を見る。"
+},
+{
+id:4,
+rarity:"N",
+name:"🔫 VALORANT青野",
+text:"エイムを信じて今日も戦場へ。"
+},
+{
+id:5,
+rarity:"N",
+name:"⛏ Minecraft建築青野",
+text:"ブロックから世界を創造する者。"
+},
+{
+id:6,
+rarity:"N",
+name:"🏠 マイクラ家作り青野",
+text:"気づけば数時間経過している。"
+},
+{
+id:7,
+rarity:"N",
+name:"⚙ 無駄装置開発青野",
+text:"使わない。でもロマンがある。"
+},
+{
+id:8,
+rarity:"N",
+name:"🎲 新作ゲーム探索青野",
+text:"未知のゲームとの出会いを求める。"
+},
+{
+id:9,
+rarity:"N",
+name:"📚 積みゲー発掘青野",
+text:"買ったことを思い出したゲームがある。"
+},
+{
+id:10,
+rarity:"N",
+name:"💻 Steam徘徊青野",
+text:"遊ぶよりセールを見る時間の方が長い。"
+},
+{
+id:11,
+rarity:"N",
+name:"📱 YouTube探検青野",
+text:"おすすめ欄という迷宮に迷い込む。"
+},
+{
+id:12,
+rarity:"N",
+name:"😴 おねむ青野",
+text:"眠気には誰も勝てない。"
+},
+{
+id:13,
+rarity:"N",
+name:"🌙 深夜活動青野",
+text:"気づけば朝になっている。"
+},
+{
+id:14,
+rarity:"N",
+name:"☕ カフェイン青野",
+text:"眠気との終わらない戦い。"
+},
+{
+id:15,
+rarity:"N",
+name:"🚿 長風呂青野",
+text:"考え事をする最高の時間。"
+},
+{
+id:16,
+rarity:"N",
+name:"🛏 早寝挑戦青野",
+text:"理想と現実は違う。"
+},
+{
+id:17,
+rarity:"N",
+name:"🧹 掃除青野",
+text:"部屋も心も整理する。"
+},
+{
+id:18,
+rarity:"N",
+name:"🧺 洗濯青野",
+text:"地味だが大切なデイリークエスト。"
+},
+{
+id:19,
+rarity:"N",
+name:"🚶 散歩青野",
+text:"歩けば新しい発見がある。"
+},
+{
+id:20,
+rarity:"N",
+name:"💧 水分補給青野",
+text:"HP回復の基本。"
+},
+{
+id:21,
+rarity:"N",
+name:"🍳 自炊青野",
+text:"料理も立派なクラフトだ。"
+},
+{
+id:22,
+rarity:"N",
+name:"🍖 肉料理青野",
+text:"肉は正義。"
+},
+{
+id:23,
+rarity:"N",
+name:"🍜 ラーメン探究青野",
+text:"スープの深淵を覗く。"
+},
+{
+id:24,
+rarity:"N",
+name:"📖 読書青野",
+text:"新たな知識を吸収する。"
+},
+{
+id:25,
+rarity:"N",
+name:"🧠 学習青野",
+text:"経験値を獲得中。"
+},
+{
+id:26,
+rarity:"N",
+name:"📝 メモ青野",
+text:"思いついたアイデアを記録する。"
+},
+{
+id:27,
+rarity:"N",
+name:"💭 深夜考察青野",
+text:"突然人生について考え始める。"
+},
+{
+id:28,
+rarity:"N",
+name:"😂 ボケ青野",
+text:"笑いを取りに行く。"
+},
+{
+id:29,
+rarity:"N",
+name:"🗣 おしゃべり青野",
+text:"話題は尽きない。"
+},
+{
+id:30,
+rarity:"N",
+name:"📷 写真青野",
+text:"思い出を記録する冒険者。"
+},
+{
+id:31,
+rarity:"N",
+name:"🎬 映画鑑賞青野",
+text:"物語の世界へ旅立つ。"
+},
+{
+id:32,
+rarity:"N",
+name:"🎧 音楽鑑賞青野",
+text:"新しい音との出会い。"
+},
+{
+id:33,
+rarity:"N",
+name:"☀ 晴天青野",
+text:"今日は外へ出る日。"
+},
+{
+id:34,
+rarity:"N",
+name:"🌧 雨の日青野",
+text:"家での冒険を楽しむ。"
+},
+{
+id:35,
+rarity:"N",
+name:"❄ 冬眠青野",
+text:"布団という最強装備。"
+},
+{
+id:36,
+rarity:"N",
+name:"🔥 やる気MAX青野",
+text:"今日は世界を救える気がする。"
+},
+{
+id:37,
+rarity:"N",
+name:"🗺 冒険開始青野",
+text:"新しい場所へ向かう。"
+},
+{
+id:38,
+rarity:"N",
+name:"🏪 ドンキ探索青野",
+text:"思わぬアイテムを発見する。"
+},
+{
+id:39,
+rarity:"N",
+name:"💸 衝動買い青野",
+text:"気づいたらレジにいる。"
+},
+{
+id:40,
+rarity:"N",
+name:"📦 荷物待機青野",
+text:"配達通知を見る回数が増える。"
+},
+{
+id:41,
+rarity:"N",
+name:"🎮 ゲーム分析青野",
+text:"面白さの構造を考える。"
+},
+{
+id:42,
+rarity:"N",
+name:"⚔ 勝利追求青野",
+text:"負けず嫌いの闘志。"
+},
+{
+id:43,
+rarity:"N",
+name:"😇 平和主義青野",
+text:"今日は争わない。"
+},
+{
+id:44,
+rarity:"N",
+name:"😈 悪戯青野",
+text:"少しふざけたくなる日。"
+},
+{
+id:45,
+rarity:"N",
+name:"⌨ コード青野",
+text:"サイトを進化させる職人。"
+},
+{
+id:46,
+rarity:"N",
+name:"🌐 WEB探検青野",
+text:"ネットの海を旅する。"
+},
+{
+id:47,
+rarity:"N",
+name:"🎯 集中青野",
+text:"周囲の音が消えるほど没頭する。"
+},
+{
+id:48,
+rarity:"N",
+name:"🐢 のんびり青野",
+text:"焦らず自分のペースで進む。"
+},
+{
+id:49,
+rarity:"N",
+name:"⚡ ひらめき青野",
+text:"突然アイデアが降ってくる。"
+},
+{
+id:50,
+rarity:"N",
+name:"🌟 普通の青野",
+text:"何気ない日常こそ最高の冒険。"
+},
+     {
+id:51,
+rarity:"R",
+name:"🎸 ギタリスト青野",
+text:"10年以上、音と共に歩み続ける演奏者。"
+},
+{
+id:52,
+rarity:"R",
+name:"🎸 速弾き挑戦青野",
+text:"指先に魂を込める修行の日。"
+},
+{
+id:53,
+rarity:"R",
+name:"🎵 耳コピ青野",
+text:"楽譜ではなく耳で音を追う職人。"
+},
+{
+id:54,
+rarity:"R",
+name:"🎬 演奏動画投稿青野",
+text:"記録を作品へと変える。"
+},
+{
+id:55,
+rarity:"R",
+name:"🎛 音作り青野",
+text:"理想の音を求めて設定をいじり続ける。"
+},
+{
+id:56,
+rarity:"R",
+name:"🎤 ライブ鑑賞青野",
+text:"生の熱量を全身で感じ取る。"
+},
+{
+id:57,
+rarity:"R",
+name:"🎵 オタマトーン青野",
+text:"天音ゆかりの影響を受けし演奏者。"
+},
+{
+id:58,
+rarity:"R",
+name:"🪘 カリンバ青野",
+text:"小さな楽器から癒しの音色を奏でる。"
+},
+{
+id:59,
+rarity:"R",
+name:"🪈 オカリナ青野",
+text:"風の音を操る旅人。"
+},
+{
+id:60,
+rarity:"R",
+name:"🎼 楽器収集家青野",
+text:"新しい音との出会いを求め続ける。"
+},
 
-    "💪 胸トレの日",
-    "💪 脚トレの日。逃げるな。",
-    "💪 背中を鍛える",
-    "💪 腕をパンパンにする",
-    "💪 腹筋100回チャレンジ",
-    "💪 ストレッチだけでも偉い",
-    "💪 30分ウォーキング",
-    "💪 階段を使う",
-    "💪 タンパク質を多く摂取する",
-    "💪 今日はチートデイ……ではない",
 
-    "🎸 ギター練習30分",
-    "🎸 新しい曲を耳コピする",
-    "🎸 速弾き練習",
-    "🎸 好きな曲を1曲完走する",
-    "🎸 オタマトーンを演奏する",
-    "🎸 カリンバを触る",
-    "🎸 オカリナで1曲吹く",
-    "🎸 演奏動画を撮る",
-    "🎸 音作りにこだわる",
+{
+id:61,
+rarity:"R",
+name:"🏰 ディズニー探検青野",
+text:"夢の国の細部まで調査する冒険者。"
+},
+{
+id:62,
+rarity:"R",
+name:"📖 設定考察青野",
+text:"背景ストーリーまで読み解く研究者。"
+},
+{
+id:63,
+rarity:"R",
+name:"🎆 ショー鑑賞青野",
+text:"演出・音楽・物語に心を動かされる。"
+},
+{
+id:64,
+rarity:"R",
+name:"📸 パーク撮影青野",
+text:"一瞬の景色を記録として残す。"
+},
+{
+id:65,
+rarity:"R",
+name:"🛍 グッズ探索青野",
+text:"新作情報を誰よりも早く調べる。"
+},
+{
+id:66,
+rarity:"R",
+name:"🍿 ディズニー映画青野",
+text:"パークだけではなく作品世界も愛する。"
+},
+{
+id:67,
+rarity:"R",
+name:"🗺 エリア研究青野",
+text:"一つの街の歴史まで理解する。"
+},
+{
+id:68,
+rarity:"R",
+name:"🚢 シー冒険者青野",
+text:"海の物語に惹かれし探検家。"
+},
+{
+id:69,
+rarity:"R",
+name:"🏰 パーク計画青野",
+text:"次の冒険ルートを考える時間も楽しい。"
+},
+{
+id:70,
+rarity:"R",
+name:"✨ 魔法を信じる青野",
+text:"夢を見る心を忘れない。"
+},
 
-    "🏰 ディズニー映画を見る",
-    "🏰 パークBGMを聴く",
-    "🏰 新グッズを調べる",
-    "🏰 過去の写真を見返す",
-    "🏰 次のインパ計画を立てる",
 
-    "🤼 名勝負を1試合見る",
-    "🤼 入場曲だけ聴く",
-    "🤼 推しレスラーの試合を見る",
-    "🤼 マイクパフォーマンスを見る",
+{
+id:71,
+rarity:"R",
+name:"🤼 プロレス観戦青野",
+text:"リング上の物語を読み解く。"
+},
+{
+id:72,
+rarity:"R",
+name:"🎤 マイク分析青野",
+text:"言葉一つで観客を動かす技術を学ぶ。"
+},
+{
+id:73,
+rarity:"R",
+name:"🔥 熱狂する青野",
+text:"最高の試合には自然と立ち上がる。"
+},
+{
+id:74,
+rarity:"R",
+name:"💥 必殺技研究青野",
+text:"技の意味や歴史まで調べる。"
+},
+{
+id:75,
+rarity:"R",
+name:"🎼 入場曲青野",
+text:"曲が流れた瞬間、戦いは始まる。"
+},
 
-    "🍖 チャーシューを作る",
-    "🍖 新しい料理に挑戦する",
-    "🍖 冷蔵庫の余り物で勝負する",
 
-    "🧩 ルービックキューブ自己ベスト更新を狙う",
-    "🧹 部屋を掃除する",
-    "💧 水を2L飲む",
-    "📚 本を読む",
-    "🚶 散歩する",
-    "🧠 新しい知識を1つ学ぶ",
-    "📺 YouTubeのおすすめを開く",
-    "💤 早寝する"
+{
+id:76,
+rarity:"R",
+name:"💪 筋トレ開始青野",
+text:"昨日の自分を超えるために鍛える。"
+},
+{
+id:77,
+rarity:"R",
+name:"🏋 ベンチプレス青野",
+text:"100kgという大きな壁へ挑戦。"
+},
+{
+id:78,
+rarity:"R",
+name:"🦵 スクワット青野",
+text:"脚の日から逃げることは許されない。"
+},
+{
+id:79,
+rarity:"R",
+name:"🔥 腕トレ青野",
+text:"パンチ力強化を図る。"
+},
+{
+id:80,
+rarity:"R",
+name:"🥩 タンパク質青野",
+text:"筋肉のための食事を意識する。"
+},
+
+
+{
+id:81,
+rarity:"R",
+name:"🍖 チャーシュー職人青野",
+text:"長時間煮込む情熱の料理人。"
+},
+{
+id:82,
+rarity:"R",
+name:"🐟 魚捌き青野",
+text:"包丁を操る料理スキルを持つ。"
+},
+{
+id:83,
+rarity:"R",
+name:"🍳 同時進行料理青野",
+text:"段取りを考えて効率よく作る。"
+},
+{
+id:84,
+rarity:"R",
+name:"🌶 新料理挑戦青野",
+text:"未知のレシピにも恐れない。"
+},
+{
+id:85,
+rarity:"R",
+name:"🍚 大食い青野",
+text:"食べることも人生の楽しみ。"
+},
+
+
+{
+id:86,
+rarity:"R",
+name:"🧩 キューブ使い青野",
+text:"42秒の記録を持つ立方体の使い手。"
+},
+{
+id:87,
+rarity:"R",
+name:"💻 PCゲーマー青野",
+text:"高性能マシンで様々な世界を旅する。"
+},
+{
+id:88,
+rarity:"R",
+name:"🖱 重量級マウス青野",
+text:"軽量時代に逆らう異端の戦士。"
+},
+{
+id:89,
+rarity:"R",
+name:"📺 配信者青野",
+text:"ゲームの楽しさを共有する。"
+},
+{
+id:90,
+rarity:"R",
+name:"🌐 クリエイター青野",
+text:"自分だけの世界をWEB上に構築する。"
+},
+     {
+id:91,
+rarity:"SR",
+name:"📖 RECORD KEEPER 青野",
+text:"人生の記録を一冊の本として残す者。"
+},
+{
+id:92,
+rarity:"SR",
+name:"🗺 WORLD EXPLORER 青野",
+text:"未知の景色と出会うため、今日も旅を続ける。"
+},
+{
+id:93,
+rarity:"SR",
+name:"🏰 DREAMLAND EXPLORER",
+text:"夢の国の歴史と物語を解き明かす冒険者。"
+},
+{
+id:94,
+rarity:"SR",
+name:"🎮 GAME ANALYST 青野",
+text:"遊ぶだけではなく、面白さの構造を読み解く者。"
+},
+{
+id:95,
+rarity:"SR",
+name:"🎮 GENRE MASTER 青野",
+text:"ジャンルの壁を越え、様々な世界を知る者。"
+},
+{
+id:96,
+rarity:"SR",
+name:"🎸 TEN YEARS MUSICIAN",
+text:"長い時間を音と共に歩み続けた演奏者。"
+},
+{
+id:97,
+rarity:"SR",
+name:"🎵 SOUND HUNTER 青野",
+text:"新しい音、楽器、表現を求め続ける者。"
+},
+{
+id:98,
+rarity:"SR",
+name:"🎬 STORY READER 青野",
+text:"作品の裏に隠された意図や感情を読み取る。"
+},
+{
+id:99,
+rarity:"SR",
+name:"🤼 RING CHRONICLER 青野",
+text:"リング上で紡がれる物語を記録する者。"
+},
+{
+id:100,
+rarity:"SR",
+name:"🍖 KITCHEN ALCHEMIST 青野",
+text:"食材を組み合わせ、新しい一皿を生み出す者。"
+},
+{
+id:101,
+rarity:"SR",
+name:"🧩 CUBE MAGICIAN 青野",
+text:"六色の立方体を自在に操る者。"
+},
+{
+id:102,
+rarity:"SR",
+name:"🖥 DIGITAL ARCHITECT 青野",
+text:"コードによって自分だけの世界を創造する者。"
+},
+{
+id:103,
+rarity:"SR",
+name:"📷 MEMORY COLLECTOR 青野",
+text:"写真という形で冒険の記録を残す者。"
+},
+{
+id:104,
+rarity:"SR",
+name:"🌊 MEDITERRANEAN SCHOLAR",
+text:"港町に眠る300年の物語を知る者。"
+},
+{
+id:105,
+rarity:"SR",
+name:"🚢 SEA ADVENTURER 青野",
+text:"未知なる海と物語を追い求める。"
+},
+{
+id:106,
+rarity:"SR",
+name:"📚 LORE SEEKER 青野",
+text:"設定、歴史、背景にこそ本当の魅力を見つける。"
+},
+{
+id:107,
+rarity:"SR",
+name:"🎭 ENTERTAINMENT RESEARCHER",
+text:"ゲーム、音楽、映画、プロレス。全ての娯楽を研究する。"
+},
+{
+id:108,
+rarity:"SR",
+name:"🎨 CREATIVE MIND 青野",
+text:"新しい遊びや表現を考え続ける発想者。"
+},
+{
+id:109,
+rarity:"SR",
+name:"🕯 OLD RECORD GUARDIAN",
+text:"古い記録書を守る管理者。"
+},
+{
+id:110,
+rarity:"SR",
+name:"🎲 FATE CHALLENGER",
+text:"運命を決めるガチャに何度でも挑む者。"
+},
+{
+id:111,
+rarity:"SR",
+name:"🎮 CONTROLLER MASTER",
+text:"手の中の道具で無数の世界を旅する。"
+},
+{
+id:112,
+rarity:"SR",
+name:"🏰 MAGIC BELIEVER",
+text:"いくつになっても魔法を信じる心を持つ。"
+},
+{
+id:113,
+rarity:"SR",
+name:"🌙 NIGHT RECORD WRITER",
+text:"静かな夜に記録を書き綴る者。"
+},
+{
+id:114,
+rarity:"SR",
+name:"📜 CHRONICLE MAKER",
+text:"日々の出来事を物語へ変える者。"
+},
+{
+id:115,
+rarity:"SR",
+name:"🎼 MELODY CREATOR",
+text:"音の組み合わせから感情を生み出す者。"
+},
+{
+id:116,
+rarity:"SR",
+name:"🗝 SECRET FINDER",
+text:"隠された秘密を探し出す者。"
+},
+{
+id:117,
+rarity:"SR",
+name:"⚔ CHALLENGE SEEKER",
+text:"新しい挑戦が現れるほど燃え上がる。"
+},
+{
+id:118,
+rarity:"SR",
+name:"🌌 DREAM CHASER",
+text:"好きなものを追い続ける冒険者。"
+},
+{
+id:119,
+rarity:"SR",
+name:"📖 THE RECORD OF AONO",
+text:"すべての記録が集まり始めた証。"
+},
+{
+id:120,
+rarity:"SR",
+name:"👑 LEGEND IN THE MAKING",
+text:"まだ完成していない、未来の伝説。"
+},
+     {
+id:121,
+rarity:"SSR",
+name:"👑 THE RECORD MASTER",
+text:"数え切れない記録を積み重ね、古き書の主となった者。"
+},
+{
+id:122,
+rarity:"SSR",
+name:"📖 THE CHRONICLE OF AONO",
+text:"一冊の書物に人生そのものを刻み続ける存在。"
+},
+{
+id:123,
+rarity:"SSR",
+name:"🏰 MASTER OF DREAMLAND",
+text:"夢の国に眠る無数の物語を知る究極の探検者。"
+},
+{
+id:124,
+rarity:"SSR",
+name:"🌊 LORD OF MEDITERRANEAN",
+text:"ザンビーニ家の歴史を語り継ぐ港の守護者。"
+},
+{
+id:125,
+rarity:"SSR",
+name:"🎮 PLAYER OF THOUSAND WORLDS",
+text:"無数のゲーム世界を旅した冒険者。"
+},
+{
+id:126,
+rarity:"SSR",
+name:"🎲 MASTER OF PLAY",
+text:"遊びという文化の本質を理解した者。"
+},
+{
+id:127,
+rarity:"SSR",
+name:"🎸 THE ETERNAL MUSICIAN",
+text:"音が途絶えるその日まで演奏を続ける者。"
+},
+{
+id:128,
+rarity:"SSR",
+name:"🎼 MASTER OF MELODY",
+text:"音の中に感情を刻む伝説の演奏者。"
+},
+{
+id:129,
+rarity:"SSR",
+name:"🎭 THE STORY SEEKER",
+text:"ゲーム、映画、プロレス、全ての物語を求める者。"
+},
+{
+id:130,
+rarity:"SSR",
+name:"🎨 CREATOR OF EXPERIENCE",
+text:"人の心を動かす体験を探究する者。"
+},
+{
+id:131,
+rarity:"SSR",
+name:"🌎 WORLD WALKER",
+text:"まだ見ぬ景色を求めて歩き続ける旅人。"
+},
+{
+id:132,
+rarity:"SSR",
+name:"🧭 MASTER EXPLORER",
+text:"未知なる場所にこそ価値を見出す冒険者。"
+},
+{
+id:133,
+rarity:"SSR",
+name:"📷 KEEPER OF MEMORIES",
+text:"写真と記録によって時を封じ込める者。"
+},
+{
+id:134,
+rarity:"SSR",
+name:"🗝 THE SECRET HUNTER",
+text:"誰も知らない隠し要素を見つけ出す探求者。"
+},
+{
+id:135,
+rarity:"SSR",
+name:"💻 DIGITAL WORLD BUILDER",
+text:"コードを使い、自分だけの世界を創造した者。"
+},
+{
+id:136,
+rarity:"SSR",
+name:"📜 GUARDIAN OF OLD RECORDS",
+text:"過去の記憶と歴史を守る管理者。"
+},
+{
+id:137,
+rarity:"SSR",
+name:"🎰 MASTER OF DESTINY",
+text:"運命のガチャを幾度となく回し続けた者。"
+},
+{
+id:138,
+rarity:"SSR",
+name:"✨ THE AWAKENED AONO",
+text:"眠っていた才能が目覚めた姿。"
+},
+{
+id:139,
+rarity:"SSR",
+name:"🌙 THE DREAMING HERO",
+text:"眠りの中でさえ冒険を続ける英雄。"
+},
+{
+id:140,
+rarity:"SSR",
+name:"🏆 LEGENDARY RECORD HOLDER",
+text:"全ての記録を超え、新たな伝説となった存在。"
+},
+     {
+id:141,
+rarity:"SECRET",
+name:"🌈 THE TRUE AONO",
+text:"全ての記録を集めた先に現れる、本当の青野。"
+},
+{
+id:142,
+rarity:"SECRET",
+name:"💤 THE SLEEPING GOD",
+text:"青野はおねむ中。世界の時間は静かに止まる。"
+},
+{
+id:143,
+rarity:"SECRET",
+name:"📖 THE FORBIDDEN PAGE",
+text:"存在しないはずのページ。なぜこの記録はここにあるのか。"
+},
+{
+id:144,
+rarity:"SECRET",
+name:"👁 THE WATCHER",
+text:"この記録をずっと見続けている、もう一人の観測者。"
+},
+{
+id:145,
+rarity:"SECRET",
+name:"💻 THE SYSTEM ADMIN",
+text:"THE RECORDそのものを書き換える権限を持つ管理者。"
+},
+{
+id:146,
+rarity:"SECRET",
+name:"🎮 PLAYER OF THE RECORD",
+text:"青野の人生というゲームを最後までプレイした存在。"
+},
+{
+id:147,
+rarity:"SECRET",
+name:"🌌 THE LOST MEMORY",
+text:"誰も覚えていない、忘れられた記憶の欠片。"
+},
+{
+id:148,
+rarity:"SECRET",
+name:"🗝 THE FINAL KEY",
+text:"全ての秘密を解放する最後の鍵。"
+},
+{
+id:149,
+rarity:"SECRET",
+name:"👑 THE RECORD CREATOR",
+text:"この世界を作り、全ての冒険を記した創造者。"
+},
+{
+id:150,
+rarity:"SECRET",
+name:"🕳 ERROR: AONO.EXE",
+text:"『この記録は破損しています。復元を開始しますか？』"
+},
+
+const rarityRates = [
+    { rarity:"SECRET", rate:0.01 },
+    { rarity:"UR", rate:0.04 },
+    { rarity:"SSR", rate:0.10 },
+    { rarity:"SR", rate:0.20 },
+    { rarity:"R", rate:0.30 },
+    { rarity:"N", rate:0.35 }
 ];
 
-const secretGacha = [
-    "🌈 LEGENDARY DROP：青野、覚醒。今日の行動：全部やる。",
-    "💤 UR：今日は何もしない。寝ろ。",
-    "🏰 UR：今すぐ夢の国に行く準備をする。",
-    "🎸 UR：気づいたら演奏動画を投稿している。",
-    "💪 UR：筋トレ後に全てを理解する。",
-    "🎮 UR：OWで謎に全部勝つ日。",
-    "🧩 UR：ルービックキューブが突然20秒台になる幻覚を見る。",
-    "🍖 UR：チャーシューが過去最高傑作になる。",
-    "🤼 UR：入場曲を聴いただけでテンションMAX。",
-    "🌙 UR：青野はおねむ中。世界は静かになった。"
-];
+let gachaData = JSON.parse(localStorage.getItem("aonoGachaData")) || {
+    count:0,
+    soul:0,
+    owned:[]
+};
+
+function saveGachaData(){
+    localStorage.setItem("aonoGachaData", JSON.stringify(gachaData));
+}
+
+function pickRarity(){
+    const r = Math.random();
+    let total = 0;
+
+    for(const item of rarityRates){
+        total += item.rate;
+        if(r < total) return item.rarity;
+    }
+
+    return "N";
+}
+
+function getRarityClass(rarity){
+    if(rarity === "SECRET") return "rarity-secret";
+    if(rarity === "UR") return "rarity-ur";
+    if(rarity === "SSR") return "rarity-ssr";
+    if(rarity === "SR") return "rarity-sr";
+    if(rarity === "R") return "rarity-r";
+    return "rarity-n";
+}
+
+function rollAonoGacha(){
+    const result = document.getElementById("gachaResult");
+    if(!result) return;
+
+    gachaData.count++;
+
+    const rarity = pickRarity();
+    const pool = aonoCards.filter(card => card.rarity === rarity);
+    const card = pool[Math.floor(Math.random() * pool.length)];
+
+    const alreadyOwned = gachaData.owned.includes(card.id);
+
+    if(alreadyOwned){
+        gachaData.soul += rarity === "SECRET" ? 100 :
+                          rarity === "UR" ? 50 :
+                          rarity === "SSR" ? 30 :
+                          rarity === "SR" ? 15 :
+                          rarity === "R" ? 5 : 1;
+    }else{
+        gachaData.owned.push(card.id);
+    }
+
+    saveGachaData();
+    updateGachaInfo();
+
+    if(rarity === "SECRET"){
+        document.body.classList.add("secret-flash");
+
+        const secretSound = document.getElementById("secretSound");
+        if(secretSound){
+            secretSound.volume = 1.0;
+            secretSound.currentTime = 0;
+            secretSound.play().catch(()=>{});
+        }
+
+        setTimeout(()=>{
+            document.body.classList.remove("secret-flash");
+        }, 2000);
+    }
+
+    result.innerHTML = `
+        <div class="aono-card ${getRarityClass(rarity)}">
+            <div class="rarity ${getRarityClass(rarity)}">${rarity}</div>
+            <div class="card-no">No.${String(card.id).padStart(3,"0")}</div>
+            <div class="card-name">${card.name}</div>
+            <div class="card-text">${card.text}</div>
+            <div class="card-status">
+                ${alreadyOwned ? "DUPLICATE / SOUL +" : "🌟 NEW CARD"}
+            </div>
+        </div>
+    `;
+}
+
+function updateGachaInfo(){
+    const countEl = document.getElementById("gachaCount");
+    const soulEl = document.getElementById("aonoSoul");
+    const rateEl = document.getElementById("collectionRate");
+
+    if(countEl) countEl.textContent = gachaData.count;
+    if(soulEl) soulEl.textContent = gachaData.soul;
+    if(rateEl) rateEl.textContent = `${gachaData.owned.length} / ${aonoCards.length}`;
+}
+
+function renderAonoCollection(){
+    const list = document.getElementById("collectionList");
+    if(!list) return;
+
+    const cardsHtml = aonoCards.map(card => {
+        const owned = gachaData.owned.includes(card.id);
+
+        return `
+            <div class="collection-card ${owned ? "" : "locked-card"}">
+                <div class="rarity ${getRarityClass(card.rarity)}">
+                    ${owned ? card.rarity : "LOCKED"}
+                </div>
+                <div class="card-no">No.${String(card.id).padStart(3,"0")}</div>
+                <div class="card-name">
+                    ${owned ? card.name : "？？？？？？"}
+                </div>
+                <div class="card-text">
+                    ${owned ? card.text : "未発見の青野カード。"}
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    list.innerHTML = `
+        <div class="item-card">
+            <div class="item-title">COLLECTION RATE</div>
+            <div class="item-text">
+                ${gachaData.owned.length} / ${aonoCards.length}
+            </div>
+        </div>
+
+        <div class="collection-grid">
+            ${cardsHtml}
+        </div>
+    `;
+}
 
 let gachaTotalCount = 0;
 
