@@ -560,6 +560,23 @@ h2{
 .menu-item:hover{
     border-left:4px solid #d4a34a;
 }
+    .menu-category{
+
+    color:#9b5a00;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin-top:12px;
+
+    margin-bottom:5px;
+
+    text-shadow:
+    0 0 5px #ffeaa0;
+
+    pointer-events:none;
+}
     
     
 </style>
@@ -684,16 +701,58 @@ DAYS
 </h2>
 
 
+<div class="menu-category">
+📜 PROFILE
+</div>
+
 <div class="menu-item">CHARACTER</div>
 <div class="menu-item">HOBBY</div>
 <div class="menu-item">SKILL</div>
+<div class="menu-item">TITLE</div>
+
+
+<div class="menu-category">
+🎒 COLLECTION
+</div>
+
 <div class="menu-item">ITEM BOX</div>
 <div class="menu-item">GALLERY</div>
+<div class="menu-item">DISNEY GUIDE</div>
 <div class="menu-item">PERFORMANCE RECORD</div>
-<div class="menu-item">ACHIEVEMENTS</div>
-<div class="menu-item">AONO GACHA</div>
-<div class="menu-item">MESSAGE BOARD</div>
-<div class="menu-item">UPDATE LOG</div>
+
+
+<div class="menu-category">
+⚔ ADVENTURE
+</div>
+
+<div class="menu-item">
+ACHIEVEMENTS
+</div>
+
+<div class="menu-item">
+AONO GACHA
+</div>
+
+<div class="menu-item">
+SECRET GAME
+</div>
+
+
+<div class="menu-category">
+📮 SYSTEM
+</div>
+
+<div class="menu-item">
+MESSAGE BOARD
+</div>
+
+<div class="menu-item">
+UPDATE LOG
+</div>
+
+<div class="menu-item">
+OPTION
+</div>
 
 
 </div>
@@ -847,6 +906,52 @@ const records = {
 
 </div>
 `,
+    "TITLE":
+`
+<div class="record-section">
+
+<div class="item-card">
+
+<div class="item-title">
+🏅 CURRENT TITLE
+</div>
+
+<div class="item-text">
+
+🏰 DREAMLAND EXPLORER<br>
+夢の国の探検者
+
+</div>
+
+</div>
+
+
+<div class="item-card">
+
+<div class="item-title">
+🎖 ACQUIRED TITLES
+</div>
+
+<div class="item-text">
+
+🎸 TEN YEAR MUSICIAN<br>
+10年以上演奏を続けし者<br><br>
+
+🚶 SUBWAY CONQUEROR<br>
+地下鉄踏破者<br><br>
+
+💪 IRON BODY IN TRAINING<br>
+鍛錬中の戦士<br><br>
+
+💤 LORD OF SLEEP<br>
+眠りの支配者
+
+</div>
+
+</div>
+
+</div>
+`,
 
     "GALLERY":
 `🏰 DISNEY MEMORIES
@@ -854,6 +959,79 @@ const records = {
 <div class="gallery-grid">
 ${galleryImages}
 </div>`,
+    "DISNEY GUIDE":
+`
+<div class="record-section">
+
+<div class="item-card">
+    <div class="item-title">
+        🏰 DISNEY PROFILE
+    </div>
+
+    <div class="item-text">
+        VISIT COUNT<br>
+        年間 約10回以上<br><br>
+
+        FAVORITE PARK<br>
+        🌊 東京ディズニーシー
+    </div>
+</div>
+
+
+<div class="item-card">
+    <div class="item-title">
+        🎢 FAVORITE ATTRACTION
+    </div>
+
+    <div class="item-text">
+        🥇 タワー・オブ・テラー<br>
+        恐怖演出だけではなく、
+        ストーリー・世界観・BGMまで完成された最高のアトラクション。
+        <br><br>
+
+        🥈 センター・オブ・ジ・アース<br>
+        地底世界への冒険感と
+        クライマックスの迫力が魅力。
+    </div>
+</div>
+
+
+<div class="item-card">
+
+<div class="item-title">
+🎬 FAVORITE MOVIE
+</div>
+
+<div class="item-text">
+
+ハイスクール・ミュージカル<br>
+
+青春・挑戦・仲間との絆を描いた、
+自分に大きな影響を与えた作品。
+
+</div>
+
+</div>
+
+
+<div class="item-card">
+
+<div class="item-title">
+🎵 FAVORITE MUSIC
+</div>
+
+<div class="item-text">
+
+パークBGM<br>
+アトラクションBGM<br>
+ショー楽曲
+
+</div>
+
+</div>
+
+</div>
+`,
 
     "ACHIEVEMENTS":
 `
@@ -1356,6 +1534,7 @@ if(secretSound){
     <audio id="bgm" loop>
     <source src="bgm.mp3" type="audio/mpeg">
 </audio>
+    
 
 </body>
 
