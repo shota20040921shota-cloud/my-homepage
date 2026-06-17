@@ -2817,10 +2817,14 @@ function renderAonoCollection(){
 
 
 
+    document.addEventListener("click", function startBGM(){
+
     const bgm = document.getElementById("bgm");
 
-    bgm.volume = 0.2;
-    bgm.play();
+    if(bgm){
+        bgm.volume = 0.2;
+        bgm.play().catch(()=>{});
+    }
 
     document.removeEventListener("click", startBGM);
 
