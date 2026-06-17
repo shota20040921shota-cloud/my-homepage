@@ -92,7 +92,9 @@ body{
 
 }
 
-
+<audio id="bgm" loop>
+    <source src="bgm.mp3" type="audio/mpeg">
+</audio>
 
 /* 左右 */
 
@@ -1329,6 +1331,16 @@ if(secretSound){
         </div>
     `;
 }
+    document.addEventListener("click", function startBGM(){
+
+    const bgm = document.getElementById("bgm");
+
+    bgm.volume = 0.2;
+    bgm.play();
+
+    document.removeEventListener("click", startBGM);
+
+});
 </script>
 
     <script async src="https://platform.twitter.com/widgets.js"></script>
