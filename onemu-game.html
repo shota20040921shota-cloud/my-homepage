@@ -84,6 +84,23 @@ button {
 </div>
 
 <script>
+
+    let bgmStarted = false;
+
+document.addEventListener("click", () => {
+
+    if(bgmStarted) return;
+
+    const bgm = document.getElementById("bgm");
+
+    if(bgm){
+        bgm.volume = 0.3;
+        bgm.play();
+    }
+
+    bgmStarted = true;
+
+});
 let score = 0;
 let time = 120;
 let speed = 2;
@@ -112,12 +129,19 @@ function createEnemy() {
     el.style.color = `hsl(${Math.random()*360},100%,60%)`;
 
     el.addEventListener("click", () => {
-        if (gameOver) return;
-        score++;
-        scoreEl.textContent = score;
-        el.remove();
-        createEnemy();
-    });
+
+    const sound = document.getElementById("hitSound");
+    sound.currentTime = 0;
+    sound.play();
+
+    score++;
+
+    scoreEl.textContent = score;
+
+    el.remove();
+
+    createEnemy();
+});
 
     document.body.appendChild(el);
     moveEnemy(el);
@@ -148,25 +172,53 @@ function spawnBoss() {
     document.body.appendChild(hpbar);
 
     boss.addEventListener("click", () => {
-        if (gameOver) return;
 
-        boss.hp--;
-        hpbar.style.width = boss.hp * 5 + "px";
+    // 💥 ボス被弾音
+    const hit = document.getElementById("bossHitSound");
 
-        score += 1;
+    if(hit){
+        hit.currentTime = 0;
+        hit.play();
+    }
+
+
+    boss.hp--;
+
+    hpbar.style.width = boss.hp * 5 + "px";
+
+
+    // ☠ ボス撃破
+    if (boss.hp <= 0) {
+
+
+        // 🌈 撃破音
+        const clear = document.getElementById("clearSound");
+
+        if(clear){
+            clear.currentTime = 0;
+            clear.play();
+        }
+
+
+        boss.remove();
+
+        hpbar.remove();
+
+        bossActive = false;
+
+
+        // 🏆 撃破ボーナス
+        score += 20;
+
         scoreEl.textContent = score;
 
-        if (boss.hp <= 0) {
-            boss.remove();
-            hpbar.remove();
 
-            bossActive = false;
-            score += 20;
-            scoreEl.textContent = score;
-
-            for (let i = 0; i < 5; i++) createEnemy();
+        // 👾 雑魚敵再開
+        for (let i = 0; i < 3; i++) {
+            createEnemy();
         }
-    });
+    }
+});
 
     document.body.appendChild(boss);
 
@@ -248,6 +300,24 @@ function endGame() {
     result.style.display = "block";
 }
 </script>
+<!-- BGM -->
+<audio id="bgm" loop>
+    <source src="onemu_bgm.mp3" type="audio/mpeg">
+</audio>
 
+<!-- 敵を倒した音 -->
+<audio id="hitSound">
+    <source src="hit.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ボスダメージ -->
+<audio id="bossHitSound">
+    <source src="boss_hit.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ボス撃破 -->
+<audio id="clearSound">
+    <source src="clear.mp3" type="audio/mpeg">
+</audio>
 </body>
 </html>
