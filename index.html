@@ -676,6 +676,73 @@ h2{
 .locked-card .card-name{
     letter-spacing:4px;
 }
+    .board-input{
+
+width:100%;
+
+padding:10px;
+
+font-size:18px;
+
+font-family:inherit;
+
+background:#fff4d5;
+
+border:3px solid #8a5a22;
+
+border-radius:10px;
+
+color:#3a2200;
+
+}
+
+
+.board-record{
+
+border:3px solid #8a5a22;
+
+background:
+rgba(255,245,210,0.9);
+
+padding:15px;
+
+border-radius:12px;
+
+margin:10px 0;
+
+}
+
+
+.board-name{
+
+font-size:20px;
+
+font-weight:bold;
+
+color:#5a3000;
+
+}
+
+
+.board-date{
+
+font-size:14px;
+
+opacity:0.7;
+
+}
+
+
+.secret-message{
+
+color:red;
+
+font-weight:bold;
+
+text-shadow:
+0 0 10px red;
+
+}
     
 </style>
 
@@ -1443,26 +1510,67 @@ ${galleryImages}
 <div class="record-section">
 
 <div class="item-card">
-    <div class="item-title">📬 MAIL</div>
-    <div class="item-text">ta7579137@gmail.com</div>
+
+<div class="item-title">
+📜 ANCIENT MESSAGE BOARD
 </div>
 
-<div class="item-card">
-    <div class="item-title">🐦 X / Twitter</div>
-    <div class="item-text">
-        <a href="https://x.com/sokuten_tema" target="_blank">
-            @sokuten_tema
-        </a>
-    </div>
+<div class="item-text">
+冒険者たちが記録を残す古代の石板
 </div>
 
-<div class="item-card">
-    <div class="item-title">MESSAGE</div>
-    <div class="item-text">
-        御用の方は上記の連絡先まで。<br>
-        年中無休 365日24時間受付中。
-    </div>
 </div>
+
+
+<div class="item-card">
+
+名前<br>
+<input id="boardName" class="board-input"
+placeholder="名無しの冒険者">
+
+<br><br>
+
+記録<br>
+
+<textarea id="boardText"
+class="board-input"
+placeholder="ここに記録を刻む"></textarea>
+
+
+<br><br>
+
+<button class="gacha-button"
+onclick="writeRecord()">
+
+📖 記録する
+
+</button>
+
+
+<button class="gacha-button"
+onclick="eraseAllRecords()">
+
+🔥 古代記録を焼却
+
+</button>
+
+
+<div class="gacha-count">
+
+封印された記録：
+<span id="eraseCount">
+0
+</span>
+
+</div>
+
+</div>
+
+
+<div id="recordList">
+読み込み中...
+</div>
+
 
 </div>
 `,
@@ -1608,6 +1716,9 @@ function openRecord() {
     if(name === "AONO COLLECTION"){
         renderAonoCollection();
     }
+    if(name === "MESSAGE BOARD"){
+    showBoard();
+}
 
     if (window.twttr) {
         twttr.widgets.load(content);
@@ -2842,6 +2953,272 @@ function renderAonoCollection(){
     document.removeEventListener("click", startBGM);
 
 });
+
+    let boardData =
+JSON.parse(localStorage.getItem("aonoBoard"))
+|| [];
+
+let eraseCount =
+Number(localStorage.getItem("eraseCount"))
+|| 0;
+
+
+function saveBoard(){
+
+localStorage.setItem(
+"aonoBoard",
+JSON.stringify(boardData)
+);
+
+localStorage.setItem(
+"eraseCount",
+eraseCount
+);
+
+}
+
+
+function writeRecord(){
+
+const name =
+document.getElementById("boardName");
+
+const text =
+document.getElementById("boardText");
+
+
+if(!name || !text) return;
+
+
+if(text.value.trim()==""){
+alert("記録が空です");
+return;
+}
+
+
+let author =
+name.value || "名無しの冒険者";
+
+
+let message =
+text.value;
+
+
+let secret = false;
+
+
+// 1% SECRET来訪者
+
+if(Math.random()<0.01){
+
+author = "？？？？？";
+
+message =
+"私はずっとこの記録を見ている";
+
+secret = true;
+
+}
+
+
+// 隠しワード
+
+if(message.toLowerCase().includes("onemu")){
+
+message +=
+"\n\n🌙 THE SLEEPING GOD が反応した";
+
+}
+
+
+if(message.toLowerCase().includes("aono")){
+
+message +=
+"\n\n📖 記録書が淡く光った";
+
+}
+
+
+boardData.unshift({
+
+name:author,
+
+text:message,
+
+date:new Date()
+.toLocaleString(),
+
+secret:secret
+
+});
+
+
+saveBoard();
+
+showBoard();
+
+
+text.value="";
+
+}
+
+
+function showBoard(){
+
+const area =
+document.getElementById("recordList");
+
+
+if(!area) return;
+
+
+area.innerHTML="";
+
+
+boardData.forEach((r,index)=>{
+
+
+area.innerHTML +=
+
+`
+
+<div class="board-record">
+
+<div class="board-name">
+
+${r.name}
+
+</div>
+
+
+<div class="board-date">
+
+${r.date}
+
+</div>
+
+
+<div class="
+${r.secret ? "secret-message":""}
+">
+
+${r.text}
+
+</div>
+
+
+<br>
+
+<button class="gacha-button"
+onclick="sealRecord(${index})">
+
+🔒 封印する
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+const count =
+document.getElementById("eraseCount");
+
+if(count)
+count.textContent = eraseCount;
+
+
+if(eraseCount>=100){
+
+alert(
+"🌈 SECRET UNLOCK\nTHE LOST MEMORY"
+);
+
+}
+
+}
+    function sealRecord(index){
+
+if(!confirm(
+"この記録を封印しますか？"
+)){
+return;
+}
+
+
+boardData.splice(index,1);
+
+eraseCount++;
+
+
+saveBoard();
+
+showBoard();
+
+
+// 100回封印で隠しイベント
+
+if(eraseCount >= 100){
+
+alert(
+`🌈 SECRET RECORD UNLOCK
+
+THE LOST MEMORY
+
+「忘れられた記録の守護者」
+`
+);
+
+}
+
+}
+
+
+function eraseAllRecords(){
+
+if(!confirm(
+"⚠ 古代の記録を全て焼却しますか？"
+)){
+return;
+}
+
+
+// 消した件数を加算
+
+eraseCount += boardData.length;
+
+
+boardData = [];
+
+
+saveBoard();
+
+
+showBoard();
+
+
+alert(
+"🔥 RECORD BURN\n古き記録は炎の中へ消えた..."
+);
+
+
+if(eraseCount >= 100){
+
+alert(
+`🌈 SECRET RECORD UNLOCK
+
+THE LOST MEMORY
+
+「忘れ去られた記録の守護者」
+`
+);
+
+}
+
+}
 </script>
 
     <script async src="https://platform.twitter.com/widgets.js"></script>
