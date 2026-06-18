@@ -87,20 +87,7 @@ button {
 
     let bgmStarted = false;
 
-document.addEventListener("click", () => {
 
-    if(bgmStarted) return;
-
-    const bgm = document.getElementById("bgm");
-
-    if(bgm){
-        bgm.volume = 0.3;
-        bgm.play();
-    }
-
-    bgmStarted = true;
-
-});
 let score = 0;
 let time = 120;
 let speed = 2;
