@@ -130,7 +130,38 @@ function createEnemy() {
 
     el.addEventListener("click", () => {
 
+    // 🎵 初撃破で戦闘BGM開始
+    if(!bgmStarted){
+
+        const bgm = document.getElementById("bgm");
+
+        if(bgm){
+            bgm.volume = 0.3;
+            bgm.play();
+        }
+
+        bgmStarted = true;
+    }
+
+
+    // 🔫 撃破音
     const sound = document.getElementById("hitSound");
+
+    if(sound){
+        sound.currentTime = 0;
+        sound.play();
+    }
+
+
+    score++;
+
+    scoreEl.textContent = score;
+
+    el.remove();
+
+    createEnemy();
+
+});
     sound.currentTime = 0;
     sound.play();
 
