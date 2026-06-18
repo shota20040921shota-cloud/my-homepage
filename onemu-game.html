@@ -2,340 +2,941 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>青野はおねむ中 シューティング</title>
+
+<title>
+青野はおねむ中 シューティング
+</title>
 
 <style>
-body {
-    margin: 0;
-    background: black;
-    overflow: hidden;
-    font-family: sans-serif;
-    color: white;
+
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
+    font-family:sans-serif;
+    color:white;
 }
 
-#ui {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    font-size: 20px;
-    z-index: 10;
+
+/*====================
+        UI
+====================*/
+
+#ui{
+    position:fixed;
+    top:10px;
+    left:10px;
+    font-size:22px;
+    z-index:10;
+    text-shadow:0 0 10px cyan;
 }
 
-.enemy, .boss {
-    position: absolute;
-    font-weight: bold;
-    cursor: pointer;
-    user-select: none;
-    text-shadow: 0 0 10px currentColor;
+
+/*====================
+      HIGH SCORE
+====================*/
+
+#highScore{
+    color:gold;
 }
 
-.enemy {
-    font-size: 30px;
+
+/*====================
+      ENEMY
+====================*/
+
+.enemy,
+.boss{
+    position:absolute;
+    font-weight:bold;
+    cursor:pointer;
+    user-select:none;
+    text-shadow:0 0 15px currentColor;
 }
 
-.boss {
-    font-size: 80px;
+
+.enemy{
+    font-size:30px;
 }
 
-.hpbar {
-    position: absolute;
-    height: 12px;
-    background: red;
-    z-index: 5;
+
+.boss{
+    font-size:80px;
 }
 
-#result {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    color: white;
-    z-index: 100;
-    text-align: center;
-    padding-top: 180px;
+
+/*====================
+       HP BAR
+====================*/
+
+.hpbar{
+    position:absolute;
+    height:14px;
+    background:red;
+    box-shadow:0 0 15px red;
+    z-index:5;
 }
 
-#result h1 {
-    font-size: 60px;
+
+/*====================
+       RESULT
+====================*/
+
+#result{
+    display:none;
+
+    position:fixed;
+    inset:0;
+
+    background:
+    rgba(0,0,0,0.92);
+
+    z-index:100;
+
+    text-align:center;
+
+    padding-top:160px;
 }
 
-button {
-    font-size: 22px;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
+
+#result h1{
+
+    font-size:60px;
+
+    color:gold;
+
+    text-shadow:
+    0 0 25px gold;
+
 }
+
+
+#result p{
+
+    font-size:28px;
+
+}
+
+
+button{
+
+    font-size:22px;
+
+    padding:12px 24px;
+
+    margin:15px;
+
+    cursor:pointer;
+
+    border-radius:10px;
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
+
+<!--====================
+          UI
+=====================-->
+
 <div id="ui">
-スコア: <span id="score">0</span><br>
-残り時間: <span id="time">120</span>秒
+
+SCORE :
+<span id="score">0</span>
+
+<br>
+
+TIME :
+<span id="time">
+120
+</span>
+
+秒
+
+
+<br>
+
+
+BEST :
+<span id="highScore">
+0
+</span>
+
 </div>
 
+
+<!--====================
+       RESULT
+=====================-->
+
 <div id="result">
-    <h1>RESULT</h1>
-    <p>最終スコア: <span id="finalScore">0</span></p>
-    <p id="rank"></p>
-    <button onclick="location.reload()">もう一度遊ぶ</button>
-    <button onclick="location.href='index.html'">記録書に戻る</button>
+
+<h1>
+RESULT
+</h1>
+
+
+<p>
+
+最終スコア :
+
+<span id="finalScore">
+0
+</span>
+
+</p>
+
+
+<p id="rank">
+</p>
+
+
+<button onclick="location.reload()">
+
+もう一度遊ぶ
+
+</button>
+
+
+<button onclick="location.href='index.html'">
+
+記録書へ戻る
+
+</button>
+
+
 </div>
+
+
 
 <script>
 
-    let bgmStarted = false;
+
+/*====================
+      GAME DATA
+====================*/
 
 
 let score = 0;
+
+
 let time = 120;
+
+
 let speed = 2;
+
+
 let bossActive = false;
+
+
 let gameOver = false;
 
-const scoreEl = document.getElementById("score");
-const timeEl = document.getElementById("time");
-const result = document.getElementById("result");
-const finalScore = document.getElementById("finalScore");
-const rankEl = document.getElementById("rank");
 
-function createEnemy() {
-    if (bossActive || gameOver) return;
+/* BGM開始判定 */
 
-    const el = document.createElement("div");
-    el.className = "enemy";
-    el.textContent = "青野はおねむ中";
-
-    el.x = Math.random() * (window.innerWidth - 220);
-    el.y = Math.random() * (window.innerHeight - 80);
-
-    el.vx = (Math.random() - 0.5) * speed * 2;
-    el.vy = (Math.random() - 0.5) * speed * 2;
-
-    el.style.color = `hsl(${Math.random()*360},100%,60%)`;
-
-    el.addEventListener("click", () => {
-
-    // 🎵 初撃破で戦闘BGM開始
-    if(!bgmStarted){
-
-        const bgm = document.getElementById("bgm");
-
-        if(bgm){
-            bgm.volume = 0.3;
-            bgm.play();
-        }
-
-        bgmStarted = true;
-    }
+let bgmStarted = false;
 
 
-    // 🔫 撃破音
-    const sound = document.getElementById("hitSound");
-
-    if(sound){
-        sound.currentTime = 0;
-        sound.play();
-    }
+/*====================
+       DOM
+====================*/
 
 
-    score++;
+const scoreEl =
+document.getElementById("score");
 
-    scoreEl.textContent = score;
 
-    el.remove();
+const timeEl =
+document.getElementById("time");
 
-    createEnemy();
 
-});
-    sound.currentTime = 0;
-    sound.play();
+const result =
+document.getElementById("result");
 
-    score++;
 
-    scoreEl.textContent = score;
+const finalScore =
+document.getElementById("finalScore");
 
-    el.remove();
 
-    createEnemy();
-});
+const rankEl =
+document.getElementById("rank");
 
-    document.body.appendChild(el);
-    moveEnemy(el);
+
+const highScoreEl =
+document.getElementById("highScore");
+
+
+/* ハイスコア表示 */
+
+let best =
+localStorage.getItem("onemuHighScore")
+|| 0;
+
+
+highScoreEl.textContent = best;
+
+
+/*====================
+       ENEMY
+====================*/
+
+
+function createEnemy(){
+
+
+if(bossActive || gameOver)
+return;
+
+
+const el =
+document.createElement("div");
+
+
+el.className =
+"enemy";
+
+
+el.textContent =
+"青野はおねむ中";
+
+
+el.x =
+Math.random()
+*
+(window.innerWidth-220);
+
+
+el.y =
+Math.random()
+*
+(window.innerHeight-80);
+
+
+el.vx =
+(Math.random()-0.5)
+* speed * 2;
+
+
+el.vy =
+(Math.random()-0.5)
+* speed * 2;
+
+
+el.style.color =
+`hsl(${Math.random()*360},100%,60%)`;
+
+
+
+/*====================
+    ENEMY CLICK
+====================*/
+
+
+el.addEventListener(
+"click",
+
+()=>{
+
+
+/* 初撃破BGM */
+
+if(!bgmStarted){
+
+
+const bgm =
+document.getElementById("bgm");
+
+
+if(bgm){
+
+bgm.volume = 0.3;
+
+
+bgm.play();
+
 }
 
-function spawnBoss() {
-    if (gameOver || bossActive) return;
 
-    bossActive = true;
-
-    document.querySelectorAll(".enemy").forEach(e => e.remove());
-
-    const boss = document.createElement("div");
-    boss.className = "boss";
-    boss.textContent = "💤青野はおねむ中💤";
-
-    boss.x = window.innerWidth / 2 - 250;
-    boss.y = window.innerHeight / 2 - 80;
-    boss.vx = 4;
-    boss.vy = 4;
-    boss.hp = 50;
-
-    boss.style.color = "red";
-
-    const hpbar = document.createElement("div");
-    hpbar.className = "hpbar";
-    hpbar.style.width = boss.hp * 5 + "px";
-    document.body.appendChild(hpbar);
-
-    boss.addEventListener("click", () => {
-
-    // 💥 ボス被弾音
-    const hit = document.getElementById("bossHitSound");
-
-    if(hit){
-        hit.currentTime = 0;
-        hit.play();
-    }
+bgmStarted = true;
 
 
-    boss.hp--;
-
-    hpbar.style.width = boss.hp * 5 + "px";
-
-
-    // ☠ ボス撃破
-    if (boss.hp <= 0) {
-
-
-        // 🌈 撃破音
-        const clear = document.getElementById("clearSound");
-
-        if(clear){
-            clear.currentTime = 0;
-            clear.play();
-        }
-
-
-        boss.remove();
-
-        hpbar.remove();
-
-        bossActive = false;
-
-
-        // 🏆 撃破ボーナス
-        score += 20;
-
-        scoreEl.textContent = score;
-
-
-        // 👾 雑魚敵再開
-        for (let i = 0; i < 3; i++) {
-            createEnemy();
-        }
-    }
-});
-
-    document.body.appendChild(boss);
-
-    function moveBoss() {
-        if (gameOver || !document.body.contains(boss)) return;
-
-        boss.x += boss.vx;
-        boss.y += boss.vy;
-
-        if (boss.x < 0 || boss.x > window.innerWidth - 500) boss.vx *= -1;
-        if (boss.y < 0 || boss.y > window.innerHeight - 120) boss.vy *= -1;
-
-        boss.style.transform = `translate(${boss.x}px, ${boss.y}px)`;
-
-        hpbar.style.left = boss.x + "px";
-        hpbar.style.top = (boss.y - 20) + "px";
-
-        requestAnimationFrame(moveBoss);
-    }
-
-    moveBoss();
 }
 
-function moveEnemy(el) {
-    function update() {
-        if (gameOver || !document.body.contains(el)) return;
+
+/* 撃破SE */
+
+
+const sound =
+document.getElementById("hitSound");
+
+
+if(sound){
+
+sound.currentTime = 0;
+
+
+sound.play();
+
+}
+    /* スコア加算 */
+
+score++;
+
+
+scoreEl.textContent = score;
+
+
+/* 敵削除 */
+
+el.remove();
+
+
+/* 新しい敵生成 */
+
+createEnemy();
+
+
+}); // 敵クリック終了
+
+
+
+document.body.appendChild(el);
+
+
+moveEnemy(el);
+
+
+}
+
+
+
+/*====================
+       BOSS
+====================*/
+
+
+function spawnBoss(){
+
+
+if(gameOver || bossActive)
+return;
+
+
+/* ボス出現中は雑魚削除 */
+
+bossActive = true;
+
+
+document
+.querySelectorAll(".enemy")
+.forEach(e=>e.remove());
+
+
+const boss =
+document.createElement("div");
+
+
+boss.className =
+"boss";
+
+
+boss.textContent =
+"💤青野はおねむ中💤";
+
+
+boss.x =
+window.innerWidth/2-250;
+
+
+boss.y =
+window.innerHeight/2-80;
+
+
+boss.vx = 4;
+
+
+boss.vy = 4;
+
+
+/* HP */
+
+boss.hp = 50;
+
+
+boss.style.color =
+"red";
+
+
+/* HPバー */
+
+const hpbar =
+document.createElement("div");
+
+
+hpbar.className =
+"hpbar";
+
+
+hpbar.style.width =
+boss.hp * 5 + "px";
+
+
+document.body.appendChild(hpbar);
+
+
+
+/*====================
+       BOSS CLICK
+====================*/
+
+
+boss.addEventListener(
+"click",
+
+()=>{
+
+
+/* 被弾SE */
+
+
+const hit =
+document.getElementById("bossHitSound");
+
+
+if(hit){
+
+hit.currentTime = 0;
+
+
+hit.play();
+
+}
+
+
+
+/* HP減少 */
+
+
+boss.hp--;
+
+
+hpbar.style.width =
+boss.hp * 5 + "px";
+
+
+/*====================
+      BOSS DEAD
+====================*/
+
+
+if(boss.hp <= 0){
+
+
+/* 撃破SE */
+
+
+const clear =
+document.getElementById("clearSound");
+
+
+if(clear){
+
+clear.currentTime = 0;
+
+
+clear.play();
+
+}
+
+
+
+/* ボス削除 */
+
+
+boss.remove();
+
+
+hpbar.remove();
+
+
+bossActive = false;
+
+
+
+/* ボーナス */
+
+
+score += 20;
+
+
+scoreEl.textContent =
+score;
+
+
+/* 雑魚再開 */
+
+
+for(
+let i = 0;
+i < 3;
+i++
+){
+
+createEnemy();
+
+}
+
+
+}
+
+
+}); // ボスクリック終了
+
+
+
+document.body.appendChild(boss);
+
+
+
+/*====================
+      BOSS MOVE
+====================*/
+
+
+function moveBoss(){
+
+
+if(
+gameOver ||
+!document.body.contains(boss)
+)
+return;
+
+
+
+boss.x += boss.vx;
+
+
+boss.y += boss.vy;
+
+
+
+/* 壁反射 */
+
+
+if(
+boss.x < 0 ||
+boss.x > window.innerWidth - 500
+)
+
+boss.vx *= -1;
+
+
+
+if(
+boss.y < 0 ||
+boss.y > window.innerHeight - 120
+)
+
+boss.vy *= -1;
+
+
+
+/* 移動 */
+
+
+boss.style.transform =
+`translate(${boss.x}px, ${boss.y}px)`;
+
+
+/* HPバー追従 */
+
+
+hpbar.style.left =
+boss.x + "px";
+
+
+hpbar.style.top =
+boss.y - 20 + "px";
+
+
+
+requestAnimationFrame(
+moveBoss
+);
+
+
+}
+
+
+moveBoss();
+
+
+}
+    /*====================
+      ENEMY MOVE
+====================*/
+
+function moveEnemy(el){
+
+    function update(){
+
+        if(
+            gameOver ||
+            !document.body.contains(el)
+        ) return;
+
 
         el.x += el.vx;
         el.y += el.vy;
 
-        if (el.x < 0 || el.x > window.innerWidth - 220) el.vx *= -1;
-        if (el.y < 0 || el.y > window.innerHeight - 60) el.vy *= -1;
 
-        el.style.transform = `translate(${el.x}px, ${el.y}px)`;
+        /* 壁反射 */
+
+        if(
+            el.x < 0 ||
+            el.x > window.innerWidth - 220
+        ){
+            el.vx *= -1;
+        }
+
+
+        if(
+            el.y < 0 ||
+            el.y > window.innerHeight - 60
+        ){
+            el.vy *= -1;
+        }
+
+
+        /* 移動 */
+
+        el.style.transform =
+        `translate(${el.x}px, ${el.y}px)`;
+
 
         requestAnimationFrame(update);
+
     }
+
 
     update();
+
 }
 
-for (let i = 0; i < 5; i++) createEnemy();
 
-const timer = setInterval(() => {
-    if (gameOver) return;
+/*====================
+      GAME START
+====================*/
+
+
+for(let i = 0; i < 5; i++){
+
+    createEnemy();
+
+}
+
+
+/*====================
+       TIMER
+====================*/
+
+
+const timer = setInterval(()=>{
+
+
+    if(gameOver) return;
+
 
     time--;
+
+
     timeEl.textContent = time;
 
-    if (time <= 0) {
+
+    if(time <= 0){
+
         endGame();
-    }
-}, 1000);
 
-const bossTimer = setInterval(() => {
-    if (!bossActive && !gameOver) {
+    }
+
+
+},1000);
+
+
+
+/*====================
+      BOSS TIMER
+====================*/
+
+
+const bossTimer = setInterval(()=>{
+
+
+    if(
+        !bossActive &&
+        !gameOver
+    ){
+
         spawnBoss();
-    }
-}, 30000);
 
-function endGame() {
+    }
+
+
+},30000);
+
+
+
+/*====================
+      GAME END
+====================*/
+
+
+function endGame(){
+
+
     gameOver = true;
 
+
     clearInterval(timer);
+
     clearInterval(bossTimer);
 
-    document.querySelectorAll(".enemy, .boss, .hpbar").forEach(e => e.remove());
+
+    /* 敵を消す */
+
+    document
+    .querySelectorAll(
+        ".enemy, .boss, .hpbar"
+    )
+    .forEach(
+        e => e.remove()
+    );
+
+
+    /* スコア表示 */
 
     finalScore.textContent = score;
 
-    if (score >= 120) {
-        rankEl.textContent = "称号：睡眠の支配者";
-    } else if (score >= 70) {
-        rankEl.textContent = "称号：快眠マスター";
-    } else {
-        rankEl.textContent = "称号：眠い人";
+
+    /* ハイスコア更新 */
+
+    if(score > best){
+
+        best = score;
+
+
+        localStorage.setItem(
+            "onemuHighScore",
+            best
+        );
+
+
+        highScoreEl.textContent = best;
+
     }
 
-    result.style.display = "block";
+
+    /* ランク */
+
+    if(score >= 150){
+
+        rankEl.textContent =
+        "👑 称号：睡眠神";
+
+    }
+
+    else if(score >= 100){
+
+        rankEl.textContent =
+        "🌙 称号：睡眠の支配者";
+
+    }
+
+    else if(score >= 70){
+
+        rankEl.textContent =
+        "✨ 称号：快眠マスター";
+
+    }
+
+    else{
+
+        rankEl.textContent =
+        "😪 称号：眠い人";
+
+    }
+
+
+    /* RESULT表示 */
+
+    result.style.display =
+    "block";
+
 }
+
+
 </script>
+
+
+
+<!--====================
+          SOUND
+=====================-->
+
+
 <!-- BGM -->
+
 <audio id="bgm" loop>
-    <source src="onemu_bgm.mp3" type="audio/mpeg">
+
+<source
+src="onemu_bgm.mp3"
+type="audio/mpeg">
+
 </audio>
 
-<!-- 敵を倒した音 -->
+
+
+<!-- 雑魚撃破 -->
+
 <audio id="hitSound">
-    <source src="hit.mp3" type="audio/mpeg">
+
+<source
+src="hit.mp3"
+type="audio/mpeg">
+
 </audio>
 
-<!-- ボスダメージ -->
+
+
+<!-- ボス被弾 -->
+
 <audio id="bossHitSound">
-    <source src="boss_hit.mp3" type="audio/mpeg">
+
+<source
+src="hit.mp3"
+type="audio/mpeg">
+
 </audio>
+
+
 
 <!-- ボス撃破 -->
+
 <audio id="clearSound">
-    <source src="clear.mp3" type="audio/mpeg">
+
+<source
+src="clear.mp3"
+type="audio/mpeg">
+
 </audio>
+
+
 </body>
+
 </html>
