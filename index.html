@@ -892,6 +892,37 @@ text-shadow:
     .favorite-heading h4{font-size:23px}.food-note{font-size:17px;min-height:125px}
 }
 
+    /* =========================
+FAVORITE背景 強制表示
+========================= */
+
+.favorite-book{
+background-image:
+url("./favorite-background.png?v=5") !important;
+
+```
+background-position:
+    center center !important;
+
+background-size:
+    cover !important;
+
+background-repeat:
+    no-repeat !important;
+
+background-color:
+    #fffaf0 !important;
+```
+
+}
+
+/* 既存の白い膜と星飾りを解除 */
+.favorite-book::before,
+.favorite-book::after{
+display:none !important;
+}
+
+
 </style>
 
 </head>
