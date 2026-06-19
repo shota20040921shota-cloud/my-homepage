@@ -744,6 +744,124 @@ text-shadow:
 
 }
     
+
+
+/* ======================
+   FAVORITE / STORYBOOK UI
+====================== */
+:root{
+    /* 後から生成する背景画像をここに置く：images/favorite-background.webp */
+    --favorite-background-image: url("images/favorite-background.webp");
+    --fav-ink:#4f4055;
+    --fav-pink:#d98fa9;
+    --fav-purple:#9d83c5;
+    --fav-blue:#7eafc8;
+    --fav-gold:#d4ad63;
+    --fav-paper:#fffaf0;
+}
+
+.favorite-book{
+    position:relative;
+    min-height:620px;
+    padding:24px;
+    overflow:hidden;
+    border:2px solid rgba(178,132,87,.52);
+    border-radius:24px;
+    color:var(--fav-ink);
+    background:
+        linear-gradient(rgba(255,250,240,.91),rgba(255,250,240,.94)),
+        var(--favorite-background-image) center/cover no-repeat,
+        radial-gradient(circle at 15% 10%,rgba(255,197,220,.55),transparent 25%),
+        radial-gradient(circle at 90% 12%,rgba(187,216,255,.55),transparent 25%),
+        linear-gradient(135deg,#fffaf1,#f5e9f6 55%,#eaf5fb);
+    box-shadow:inset 0 0 38px rgba(179,126,83,.18),0 12px 28px rgba(72,44,42,.18);
+}
+
+.favorite-book::before,
+.favorite-book::after{
+    content:"✦  ·  ✧  ·  ✦";
+    position:absolute;
+    color:rgba(172,116,168,.36);
+    letter-spacing:9px;
+    pointer-events:none;
+}
+.favorite-book::before{top:15px;right:24px;}
+.favorite-book::after{bottom:13px;left:24px;transform:rotate(180deg);}
+
+.favorite-hero{text-align:center;padding:8px 12px 24px;}
+.favorite-kicker{font-size:13px;letter-spacing:4px;color:#9b7899;margin:0 0 4px;}
+.favorite-hero h3{font-size:46px;letter-spacing:8px;color:#845c82;margin:0;line-height:1.2;text-shadow:1px 2px #fff;}
+.favorite-hero p{font-size:16px;margin-top:6px;color:#745f70;}
+
+.favorite-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 auto 22px;max-width:860px;}
+.favorite-tab{
+    appearance:none;border:1px solid rgba(126,93,112,.27);border-bottom:4px solid rgba(126,93,112,.2);
+    padding:13px 8px;border-radius:18px 18px 8px 8px;background:rgba(255,255,255,.72);
+    color:#655361;font:700 17px "Yu Mincho","MS Mincho",serif;letter-spacing:2px;cursor:pointer;
+    transition:.22s transform,.22s box-shadow,.22s background;
+}
+.favorite-tab:nth-child(1){background:#eee3f8;}
+.favorite-tab:nth-child(2){background:#fde7ee;}
+.favorite-tab:nth-child(3){background:#e3f2fa;}
+.favorite-tab:nth-child(4){background:#f9eadb;}
+.favorite-tab:hover{transform:translateY(-3px);box-shadow:0 8px 16px rgba(109,76,94,.14);}
+.favorite-tab.active{transform:translateY(-4px);box-shadow:0 8px 18px rgba(117,81,105,.2),inset 0 -3px rgba(255,255,255,.8);outline:2px solid rgba(255,255,255,.9);}
+
+.favorite-panel{animation:favoritePageIn .35s ease;}
+.favorite-panel[hidden]{display:none!important;}
+@keyframes favoritePageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.favorite-heading{display:flex;align-items:center;gap:14px;margin:3px 0 20px;padding-bottom:12px;border-bottom:1px dashed rgba(139,100,117,.35);}
+.favorite-heading>span{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#fff8fb;border:1px solid #e4c1ce;color:#bb7d94;font-size:14px;}
+.favorite-heading h4{font-size:28px;letter-spacing:4px;margin:0;color:#76546e;}
+.favorite-heading p{font-size:15px;margin:2px 0 0;color:#7b6976;}
+
+.hobby-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;}
+.hobby-card{position:relative;min-height:150px;padding:25px 22px 20px 86px;border-radius:18px;background:rgba(255,255,255,.72);border:1px solid rgba(176,132,156,.27);box-shadow:0 7px 15px rgba(88,55,72,.1);overflow:hidden;}
+.hobby-card::after{content:"";position:absolute;width:85px;height:85px;right:-24px;bottom:-28px;border:2px dotted currentColor;border-radius:50%;opacity:.16;}
+.hobby-symbol{position:absolute;left:20px;top:25px;display:grid;place-items:center;width:50px;height:50px;border-radius:50%;background:#fff;color:#9f7595;font-size:27px;box-shadow:0 5px 10px rgba(89,54,76,.12);}
+.hobby-card h5{margin:0 0 8px;font-size:22px;letter-spacing:2px;color:#6d5269;}
+.hobby-card p{font-size:15px;line-height:1.7;margin:0;}
+.hobby-guitar{background:linear-gradient(135deg,#fff7fa,#f9e5ee)}.hobby-game{background:linear-gradient(135deg,#f8f4ff,#eae4fa)}.hobby-wrestling{background:linear-gradient(135deg,#fffaf0,#f6ead7)}.hobby-disney{background:linear-gradient(135deg,#f4fbff,#dfeff8)}
+
+.food-note-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;}
+.food-note{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:142px;padding:28px 10px 16px;text-align:center;font-size:20px;font-weight:bold;line-height:1.5;background:#fffdf8;border:1px solid #e6d1b3;border-radius:8px;box-shadow:0 7px 14px rgba(86,54,43,.13);transform:rotate(var(--tilt,0deg));}
+.food-note::before{content:"";position:absolute;top:-8px;width:56px;height:20px;background:var(--tape,#efd2dc);opacity:.78;transform:rotate(-3deg);}
+.food-note:nth-child(2n){--tilt:1deg}.food-note:nth-child(3n){--tilt:-1deg}.food-note.pink{--tape:#efb9ca}.food-note.purple{--tape:#cfc0e9}.food-note.blue{--tape:#bcd9e8}.food-note.gold{--tape:#ead3a6}
+.food-note small{display:block;margin-top:9px;font-size:12px;font-weight:normal;color:#a46e78;}
+.food-note .allergy{padding:2px 9px;border-radius:999px;background:#dc7e93;color:white;font-weight:bold;letter-spacing:1px;}
+
+.shop-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+.shop-card{padding:12px 12px 20px;background:rgba(255,255,255,.8);border:1px solid #e4cdb9;border-radius:8px;box-shadow:0 9px 19px rgba(76,49,42,.15);text-align:center;transition:.25s;}
+.shop-card:nth-child(1){transform:rotate(-1deg)}.shop-card:nth-child(2){transform:translateY(10px) rotate(1deg)}.shop-card:nth-child(3){transform:rotate(-.5deg)}
+.shop-card:hover{transform:translateY(-7px) rotate(0);box-shadow:0 15px 25px rgba(76,49,42,.2);}
+.shop-photo{position:relative;height:230px;background:linear-gradient(145deg,#f8e8ed,#e4edf7);overflow:hidden;border-radius:5px;}
+.shop-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.shop-photo.photo-missing::after{content:"PHOTO WILL BE ADDED";position:absolute;inset:0;display:grid;place-items:center;color:#9b7e8e;letter-spacing:2px;font-size:13px;background:radial-gradient(circle at 30% 30%,#fff,transparent 28%),linear-gradient(135deg,#f9e6ee,#e4eff8);}
+.shop-number{font-size:11px;letter-spacing:2px;color:#ae8b9d;margin:13px 0 2px;}
+.shop-card h5{font-size:21px;margin:0;color:#674d60;}.shop-card span{font-size:12px;letter-spacing:2px;color:#9a7f8d;}
+.shop-image-note{text-align:center;font-size:13px;color:#8f7583;margin:26px 0 0;}
+
+.dislike-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+.dislike-card{position:relative;display:flex;align-items:center;justify-content:center;min-height:185px;padding:25px;background:rgba(255,255,255,.78);border:1px solid #e4c8ce;border-radius:20px;box-shadow:0 8px 18px rgba(76,49,60,.12);text-align:center;}
+.dislike-card>span{position:absolute;left:17px;top:13px;color:#c48b9b;font-size:13px;letter-spacing:2px;}
+.dislike-card h5{font-size:24px;line-height:1.6;color:#694f5e;margin:0;}
+.dislike-card.no-visual{background:linear-gradient(135deg,#fffaf8,#f7ebef);}
+.dislike-card.conversation{background:linear-gradient(135deg,#faf7ff,#eae6f7);}
+.dislike-note{text-align:center;margin:18px 0 0;font-size:13px;color:#917582;}
+
+@media(max-width:900px){
+    .favorite-tabs{grid-template-columns:repeat(2,1fr)}
+    .food-note-grid{grid-template-columns:repeat(3,1fr)}
+    .shop-grid{grid-template-columns:1fr}
+    .shop-card:nth-child(n){transform:none}.shop-photo{height:280px}
+}
+@media(max-width:620px){
+    .favorite-book{padding:14px}.favorite-hero h3{font-size:34px;letter-spacing:4px}
+    .favorite-tabs{grid-template-columns:1fr 1fr}.hobby-grid,.dislike-grid{grid-template-columns:1fr}.food-note-grid{grid-template-columns:repeat(2,1fr)}
+    .favorite-heading h4{font-size:23px}.food-note{font-size:17px;min-height:125px}
+}
+
 </style>
 
 </head>
@@ -871,7 +989,7 @@ DAYS
 </div>
 
 <div class="menu-item">CHARACTER</div>
-<div class="menu-item">HOBBY</div>
+<div class="menu-item">FAVORITE</div>
 <div class="menu-item">SKILL</div>
 <div class="menu-item">TITLE</div>
 
@@ -1024,27 +1142,90 @@ const records = {
 </div>
 `,
 
-    "HOBBY":
+    "FAVORITE":
 `
-<div class="record-section">
+<section class="favorite-book" aria-label="FAVORITE RECORD">
+    <div class="favorite-hero">
+        <p class="favorite-kicker">AONO'S PERSONAL RECORD</p>
+        <h3>FAVORITE</h3>
+        <p>好きなこと、よく行く場所、そして少し苦手なもの。</p>
+    </div>
 
-<div class="item-card">
-<div class="item-title">🎸 GUITAR</div>
-</div>
+    <div class="favorite-tabs" role="tablist" aria-label="FAVORITE CATEGORY">
+        <button class="favorite-tab active" type="button" data-favorite-tab="hobby" role="tab" aria-selected="true">HOBBY</button>
+        <button class="favorite-tab" type="button" data-favorite-tab="foods" role="tab" aria-selected="false">FOODS</button>
+        <button class="favorite-tab" type="button" data-favorite-tab="shops" role="tab" aria-selected="false">SHOPS</button>
+        <button class="favorite-tab" type="button" data-favorite-tab="dislike" role="tab" aria-selected="false">DISLIKE</button>
+    </div>
 
-<div class="item-card">
-<div class="item-title">🎮 GAME</div>
-</div>
+    <div class="favorite-panel active" data-favorite-panel="hobby" role="tabpanel">
+        <div class="favorite-heading">
+            <span>01</span>
+            <div><h4>HOBBY</h4><p>時間を忘れて夢中になれるもの。</p></div>
+        </div>
+        <div class="hobby-grid">
+            <article class="hobby-card hobby-guitar"><div class="hobby-symbol">♪</div><h5>GUITAR</h5><p>10年以上続けている大切な趣味。</p></article>
+            <article class="hobby-card hobby-game"><div class="hobby-symbol">◆</div><h5>GAME</h5><p>遊ぶだけでなく、面白さの仕組みまで考える。</p></article>
+            <article class="hobby-card hobby-wrestling"><div class="hobby-symbol">★</div><h5>PRO WRESTLING</h5><p>試合、演出、言葉から生まれる物語を楽しむ。</p></article>
+            <article class="hobby-card hobby-disney"><div class="hobby-symbol">✦</div><h5>DISNEY</h5><p>パークの景色や設定、ショーの演出を探究する。</p></article>
+        </div>
+    </div>
 
-<div class="item-card">
-<div class="item-title">🤼 PRO WRESTLING</div>
-</div>
+    <div class="favorite-panel" data-favorite-panel="foods" role="tabpanel" hidden>
+        <div class="favorite-heading">
+            <span>02</span>
+            <div><h4>FOODS</h4><p>基本的には何でも好き。それでも少し苦手な食材たち。</p></div>
+        </div>
+        <div class="food-note-grid">
+            <article class="food-note pink">イチゴを含む<br>ベリー系<small>ブルーベリーを除く</small></article>
+            <article class="food-note purple">ゴーヤ</article>
+            <article class="food-note blue">春菊</article>
+            <article class="food-note pink">キウイ<small class="allergy">ALLERGY</small></article>
+            <article class="food-note gold">椎茸と大根<small>煮込み料理</small></article>
+            <article class="food-note blue">カリフラワー</article>
+            <article class="food-note purple">芽キャベツ</article>
+            <article class="food-note pink">セロリ</article>
+            <article class="food-note gold">パクチー</article>
+            <article class="food-note blue">八角</article>
+            <article class="food-note purple">らっきょう</article>
+        </div>
+    </div>
 
-<div class="item-card">
-<div class="item-title">🏰 DISNEY</div>
-</div>
+    <div class="favorite-panel" data-favorite-panel="shops" role="tabpanel" hidden>
+        <div class="favorite-heading">
+            <span>03</span>
+            <div><h4>SHOPS</h4><p>つい何度も足を運びたくなる、お気に入りの飲食店。</p></div>
+        </div>
+        <div class="shop-grid">
+            <article class="shop-card">
+                <div class="shop-photo"><img src="favorite-shops/capricciosa.jpg" alt="カプリチョーザ" onerror="this.closest('.shop-photo').classList.add('photo-missing');this.remove();"></div>
+                <p class="shop-number">FAVORITE SHOP 01</p><h5>カプリチョーザ</h5><span>CAPRICCIOSA</span>
+            </article>
+            <article class="shop-card">
+                <div class="shop-photo"><img src="favorite-shops/ohana-donmaru.jpg" alt="おはな丼丸" onerror="this.closest('.shop-photo').classList.add('photo-missing');this.remove();"></div>
+                <p class="shop-number">FAVORITE SHOP 02</p><h5>おはな丼丸</h5><span>OHANA DONMARU</span>
+            </article>
+            <article class="shop-card">
+                <div class="shop-photo"><img src="favorite-shops/tgi-fridays.jpg" alt="TGI FRIDAYS" onerror="this.closest('.shop-photo').classList.add('photo-missing');this.remove();"></div>
+                <p class="shop-number">FAVORITE SHOP 03</p><h5>TGI FRIDAYS</h5><span>FRIDAYS</span>
+            </article>
+        </div>
+        <p class="shop-image-note">写真は <b>favorite-shops</b> フォルダへ入れると自動で表示されます。</p>
+    </div>
 
-</div>
+    <div class="favorite-panel" data-favorite-panel="dislike" role="tabpanel" hidden>
+        <div class="favorite-heading">
+            <span>04</span>
+            <div><h4>DISLIKE</h4><p>できれば距離を置きたいもの。</p></div>
+        </div>
+        <div class="dislike-grid">
+            <article class="dislike-card no-visual"><span>01</span><h5>カエル</h5></article>
+            <article class="dislike-card no-visual"><span>02</span><h5>虫全般</h5></article>
+            <article class="dislike-card conversation"><span>03</span><h5>会話のキャッチボールが<br>できない人</h5></article>
+        </div>
+        <p class="dislike-note">このページでは、苦手なものの写真・イラスト・絵文字は表示しません。</p>
+    </div>
+</section>
 `,
     "SKILL":
 `
@@ -1682,7 +1863,7 @@ THE RECORD OF AONO SHOTA の
 <div class="item-title">📜 Ver.1.0</div>
 <div class="item-text">
 THE RECORD OF AONO SHOTA 開設<br>
-CHARACTER / HOBBY / SKILL 追加
+CHARACTER / FAVORITE / SKILL 追加
 </div>
 </div>
 
@@ -1822,7 +2003,11 @@ function openRecord() {
 
     const content = document.getElementById("content");
 
-    content.innerHTML = records[name];
+    content.innerHTML = records[name] || `<div class="item-card"><div class="item-title">RECORD NOT FOUND</div></div>`;
+
+    if(name === "FAVORITE"){
+        initializeFavoriteTabs();
+    }
 
     if(name === "AONO GACHA"){
         updateGachaInfo();
@@ -1838,6 +2023,29 @@ function openRecord() {
     if (window.twttr) {
         twttr.widgets.load(content);
     }
+}
+
+function initializeFavoriteTabs(){
+    const tabs = document.querySelectorAll(".favorite-tab");
+    const panels = document.querySelectorAll(".favorite-panel");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const target = tab.dataset.favoriteTab;
+
+            tabs.forEach(button => {
+                const isActive = button === tab;
+                button.classList.toggle("active", isActive);
+                button.setAttribute("aria-selected", String(isActive));
+            });
+
+            panels.forEach(panel => {
+                const isActive = panel.dataset.favoritePanel === target;
+                panel.classList.toggle("active", isActive);
+                panel.hidden = !isActive;
+            });
+        });
+    });
 }
 
 menuItems.forEach((item, index) => {
