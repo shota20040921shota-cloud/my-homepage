@@ -750,14 +750,44 @@ text-shadow:
    FAVORITE / STORYBOOK UI
 ====================== */
 :root{
-    /* 後から生成する背景画像をここに置く：images/favorite-background.webp */
-    --favorite-background-image: url("favorite-background.png");
+    --favorite-background-image:url("./favorite-background.png");
+
     --fav-ink:#4f4055;
     --fav-pink:#d98fa9;
     --fav-purple:#9d83c5;
     --fav-blue:#7eafc8;
     --fav-gold:#d4ad63;
     --fav-paper:#fffaf0;
+}
+
+.favorite-book{
+    position:relative;
+
+    min-height:620px;
+
+    padding:24px;
+
+    overflow:hidden;
+
+    border:2px solid rgba(178,132,87,.52);
+
+    border-radius:24px;
+
+    color:var(--fav-ink);
+
+    background:
+        linear-gradient(
+            rgba(255,250,240,.35),
+            rgba(255,250,240,.52)
+        ),
+
+        var(--favorite-background-image)
+        center / cover
+        no-repeat;
+
+    box-shadow:
+        inset 0 0 38px rgba(179,126,83,.18),
+        0 12px 28px rgba(72,44,42,.18);
 }
 
 .favorite-book{
