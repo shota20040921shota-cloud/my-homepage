@@ -1203,7 +1203,7 @@ const records = {
 </div>
 `,
 
-    "FAVORITE":
+    ""PREFERENCES":
 `
 <section class="favorite-book" aria-label="FAVORITE RECORD">
     <div class="favorite-hero">
@@ -2066,9 +2066,9 @@ function openRecord() {
 
     content.innerHTML = records[name] || `<div class="item-card"><div class="item-title">RECORD NOT FOUND</div></div>`;
 
-    if(name === "FAVORITE"){
-        initializeFavoriteTabs();
-    }
+    if(name === "PREFERENCES"){
+    initializeFavoriteTabs();
+}
 
     if(name === "AONO GACHA"){
         updateGachaInfo();
