@@ -1015,9 +1015,10 @@ display:none !important;
     position:relative;
     isolation:isolate;
     background:
-        linear-gradient(rgba(255,248,225,.82),rgba(239,216,173,.88)),
+        linear-gradient(rgba(255,248,225,.42),rgba(239,216,173,.50)),
         var(--page-bg) center / cover no-repeat;
     transition:background-image .35s ease, box-shadow .35s ease;
+    background-color:#d9b678;
 }
 .record::before{
     content:"";
@@ -1026,7 +1027,7 @@ display:none !important;
     z-index:-1;
     border-radius:10px;
     pointer-events:none;
-    background:radial-gradient(circle at center,rgba(255,253,239,.34),rgba(79,42,8,.08));
+    background:radial-gradient(circle at center,rgba(255,253,239,.10),rgba(79,42,8,.05));
 }
 .current-location{
     position:sticky;
