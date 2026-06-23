@@ -988,6 +988,23 @@ display:none !important;
 .muscle-warning{font-size:13px;line-height:1.7;color:#806344;margin-top:12px;}
 @media(max-width:700px){.muscle-form-grid{grid-template-columns:1fr;}.muscle-calorie{font-size:34px;}}
 
+
+/* ======================
+   DETAILED MUSCLE CALCULATOR
+====================== */
+.muscle-span-2{grid-column:1/-1;}
+.muscle-subtitle{margin:18px 0 10px;padding:8px 12px;border-left:5px solid #8a5a22;background:rgba(255,245,210,.72);font-weight:bold;color:#5a3000;}
+.muscle-dynamic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;grid-column:1/-1;padding-top:4px;}
+.muscle-help{font-size:12px;line-height:1.55;color:#806344;}
+.muscle-check{display:flex;align-items:center;gap:8px;font-size:15px;color:#5a3000;}
+.muscle-check input{width:20px;height:20px;}
+.muscle-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0;}
+.muscle-result-box{padding:12px;border:2px solid #b98a4d;border-radius:12px;background:rgba(255,255,255,.55);}
+.muscle-result-box b{display:block;font-size:22px;color:#8b3f00;margin-top:4px;}
+.muscle-range{font-size:17px;font-weight:bold;color:#70420c;margin-top:8px;}
+.muscle-method{margin-top:12px;padding:12px;border-radius:10px;background:rgba(107,59,12,.08);font-size:13px;line-height:1.65;text-align:left;}
+@media(max-width:700px){.muscle-dynamic{grid-template-columns:1fr}.muscle-result-grid{grid-template-columns:1fr}.muscle-span-2{grid-column:auto;}}
+
 </style>
 
 </head>
@@ -1331,79 +1348,60 @@ const records = {
     "MUSCLE": `
 <div class="record-section">
   <div class="item-card">
-    <div class="item-title">💪 MUSCLE CALORIE</div>
+    <div class="item-title">💪 DETAILED CALORIE CALCULATOR</div>
     <div class="item-text">
-      身長・体重などの情報とトレーニング内容から、消費カロリーの目安を計算します。<br>
-      計算結果や入力内容は保存されません。
+      種目ごとの速度・傾斜・ワット数・重量・休憩時間まで反映して、運動中の消費カロリーを推定します。<br>
+      入力内容と計算結果は保存されません。
     </div>
   </div>
 
   <div class="item-card">
-    <div class="item-title">🔥 CALORIE INPUT</div>
+    <div class="item-title">👤 BODY DATA</div>
     <div class="muscle-form-grid">
       <div class="muscle-field">
         <label for="muscleSex">SEX</label>
         <select id="muscleSex" class="muscle-input">
-          <option value="male">男性</option>
-          <option value="female">女性</option>
+          <option value="male">男性</option><option value="female">女性</option>
         </select>
       </div>
-
       <div class="muscle-field">
         <label for="muscleAge">AGE</label>
-        <input id="muscleAge" class="muscle-input" type="number" min="10" max="100" value="21" inputmode="numeric">
+        <input id="muscleAge" class="muscle-input" type="number" min="10" max="100" value="21">
       </div>
-
       <div class="muscle-field">
         <label for="muscleHeight">HEIGHT（cm）</label>
         <input id="muscleHeight" class="muscle-input" type="number" min="100" max="250" step="0.1" placeholder="例：175">
       </div>
-
       <div class="muscle-field">
         <label for="muscleWeight">WEIGHT（kg）</label>
         <input id="muscleWeight" class="muscle-input" type="number" min="30" max="300" step="0.1" placeholder="例：80">
       </div>
-
+      <div class="muscle-field">
+        <label for="muscleBodyFat">BODY FAT（%・任意）</label>
+        <input id="muscleBodyFat" class="muscle-input" type="number" min="3" max="70" step="0.1" placeholder="未入力でも計算可能">
+        <div class="muscle-help">入力時は除脂肪体重を使った基礎代謝も表示します。</div>
+      </div>
       <div class="muscle-field">
         <label for="muscleExercise">MENU</label>
-        <select id="muscleExercise" class="muscle-input" onchange="updateMuscleUnit()">
-          <option value="トレッドミル">トレッドミル</option>
-          <option value="エアロバイク">エアロバイク</option>
-          <option value="ウォーキング">ウォーキング</option>
-          <option value="自転車">自転車</option>
-          <option value="ベンチプレス">ベンチプレス</option>
-          <option value="ディップス">ディップス</option>
-          <option value="ペックフライ">ペックフライ</option>
-          <option value="ラットプルダウン">ラットプルダウン</option>
-          <option value="チンニング">チンニング</option>
-          <option value="マシンスクワット">マシンスクワット</option>
-          <option value="スクワット">スクワット</option>
-          <option value="レッグプレス">レッグプレス</option>
-          <option value="レッグエクステンション">レッグエクステンション</option>
-          <option value="アブベンチ（腹筋）">アブベンチ（腹筋）</option>
+        <select id="muscleExercise" class="muscle-input" onchange="updateDetailedMuscleFields()">
+          <option value="トレッドミル">トレッドミル</option><option value="エアロバイク">エアロバイク</option>
+          <option value="ウォーキング">ウォーキング</option><option value="自転車">自転車</option>
+          <option value="ベンチプレス">ベンチプレス</option><option value="ディップス">ディップス</option>
+          <option value="ペックフライ">ペックフライ</option><option value="ラットプルダウン">ラットプルダウン</option>
+          <option value="チンニング">チンニング</option><option value="マシンスクワット">マシンスクワット</option>
+          <option value="スクワット">スクワット</option><option value="レッグプレス">レッグプレス</option>
+          <option value="レッグエクステンション">レッグエクステンション</option><option value="アブベンチ（腹筋）">アブベンチ（腹筋）</option>
         </select>
       </div>
 
-      <div class="muscle-field">
-        <label for="muscleIntensity">INTENSITY</label>
-        <select id="muscleIntensity" class="muscle-input">
-          <option value="easy">イージー</option>
-          <option value="normal" selected>普通</option>
-          <option value="hard">キツい</option>
-        </select>
-      </div>
+      <div id="muscleDynamicFields" class="muscle-dynamic"></div>
 
-      <div class="muscle-field">
-        <label id="muscleAmountLabel" for="muscleAmount">TIME</label>
-        <select id="muscleAmount" class="muscle-input"></select>
-        <div id="muscleUnitNote" class="muscle-unit-note">10分単位で選択</div>
+      <div class="muscle-field muscle-span-2">
+        <label class="muscle-check"><input id="muscleNetCalories" type="checkbox">安静時に消費する分を除いた「運動による純消費」も表示する</label>
       </div>
     </div>
 
-    <div class="muscle-actions">
-      <button class="gacha-button" type="button" onclick="calculateMuscleCalories()">🔥 消費カロリーを計算</button>
-    </div>
-
+    <div class="muscle-actions"><button class="gacha-button" type="button" onclick="calculateDetailedMuscleCalories()">🔥 詳細計算</button></div>
     <div id="muscleResult" class="muscle-result" aria-live="polite"></div>
   </div>
 </div>
@@ -2243,97 +2241,144 @@ function openRecord() {
 
 
 const cardioMenus = ["トレッドミル", "エアロバイク", "ウォーキング", "自転車"];
-
-const muscleMetTable = {
-    "トレッドミル": {easy:4.3, normal:7.0, hard:10.0},
-    "エアロバイク": {easy:4.0, normal:6.8, hard:10.0},
-    "ウォーキング": {easy:2.8, normal:3.8, hard:5.0},
-    "自転車": {easy:4.0, normal:6.8, hard:10.0},
-    "ベンチプレス": {easy:3.0, normal:5.0, hard:6.0},
-    "ディップス": {easy:3.5, normal:5.5, hard:7.0},
-    "ペックフライ": {easy:3.0, normal:5.0, hard:6.0},
-    "ラットプルダウン": {easy:3.0, normal:5.0, hard:6.0},
-    "チンニング": {easy:4.0, normal:6.0, hard:8.0},
-    "マシンスクワット": {easy:3.5, normal:5.5, hard:7.0},
-    "スクワット": {easy:4.0, normal:6.0, hard:8.0},
-    "レッグプレス": {easy:3.5, normal:5.5, hard:7.0},
-    "レッグエクステンション": {easy:3.0, normal:5.0, hard:6.0},
-    "アブベンチ（腹筋）": {easy:3.5, normal:5.0, hard:6.5}
-};
+const strengthMenus = ["ベンチプレス","ディップス","ペックフライ","ラットプルダウン","チンニング","マシンスクワット","スクワット","レッグプレス","レッグエクステンション","アブベンチ（腹筋）"];
 
 function initializeMuscleCalculator(){
-    updateMuscleUnit();
+    updateDetailedMuscleFields();
 }
 
-function updateMuscleUnit(){
-    const exercise = document.getElementById("muscleExercise");
-    const amount = document.getElementById("muscleAmount");
-    const label = document.getElementById("muscleAmountLabel");
-    const note = document.getElementById("muscleUnitNote");
-    const result = document.getElementById("muscleResult");
-    if(!exercise || !amount) return;
+function fieldHtml(id,label,type,value,min,max,step,help){
+    return '<div class="muscle-field"><label for="'+id+'">'+label+'</label><input id="'+id+'" class="muscle-input" type="'+type+'" value="'+value+'" min="'+min+'" max="'+max+'" step="'+step+'">'+(help?'<div class="muscle-help">'+help+'</div>':'')+'</div>';
+}
+function selectHtml(id,label,options,help){
+    return '<div class="muscle-field"><label for="'+id+'">'+label+'</label><select id="'+id+'" class="muscle-input">'+options.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>';}).join('')+'</select>'+(help?'<div class="muscle-help">'+help+'</div>':'')+'</div>';
+}
 
-    if(result){ result.classList.remove("show"); result.innerHTML = ""; }
-    const isCardio = cardioMenus.includes(exercise.value);
-    amount.innerHTML = "";
-
-    if(isCardio){
-        label.textContent = "TIME";
-        note.textContent = "10分単位で選択";
-        for(let minutes = 10; minutes <= 180; minutes += 10){
-            amount.add(new Option(`${minutes}分`, minutes));
-        }
+function updateDetailedMuscleFields(){
+    const exercise=document.getElementById('muscleExercise')?.value;
+    const box=document.getElementById('muscleDynamicFields');
+    const result=document.getElementById('muscleResult');
+    if(!exercise||!box)return;
+    if(result){result.classList.remove('show');result.innerHTML='';}
+    let html='';
+    if(exercise==='トレッドミル'){
+        html+=fieldHtml('muscleMinutes','TIME（分）','number','30','1','300','1','実際に動いていた時間を入力');
+        html+=fieldHtml('muscleSpeed','SPEED（km/h）','number','6','1','25','0.1','平均速度');
+        html+=fieldHtml('muscleIncline','INCLINE（%）','number','0','0','30','0.5','マシンに表示される傾斜率');
+        html+=selectHtml('muscleMode','MODE',[['auto','速度から自動判定'],['walk','ウォーキング'],['run','ランニング']],'8 km/h未満は歩行、以上は走行として自動判定');
+    }else if(exercise==='エアロバイク'){
+        html+=fieldHtml('muscleMinutes','TIME（分）','number','30','1','300','1','実際に漕いだ時間');
+        html+=fieldHtml('muscleWatts','AVERAGE POWER（W）','number','100','10','500','1','マシンの平均ワット数。分からない場合は強度を使用');
+        html+=selectHtml('muscleBikeFallback','WATT不明時の強度',[['easy','イージー'],['normal','普通'],['hard','キツい']],'ワット数を空欄にした場合だけ使用');
+    }else if(exercise==='ウォーキング'){
+        html+=fieldHtml('muscleMinutes','TIME（分）','number','30','1','600','1','停止時間を除いた歩行時間');
+        html+=fieldHtml('muscleSpeed','AVERAGE SPEED（km/h）','number','4.8','1','10','0.1','GPSや距離÷時間で求めた平均速度');
+        html+=fieldHtml('muscleGrade','AVERAGE GRADE（%・任意）','number','0','-10','30','0.5','平地は0。坂道の平均が不明なら0');
+    }else if(exercise==='自転車'){
+        html+=fieldHtml('muscleMinutes','TIME（分）','number','30','1','600','1','信号待ちなどを除いた走行時間');
+        html+=fieldHtml('muscleSpeed','AVERAGE SPEED（km/h）','number','18','5','60','0.1','移動時間に対する平均速度');
+        html+=selectHtml('muscleTerrain','TERRAIN',[['flat','ほぼ平坦'],['rolling','アップダウンあり'],['hill','坂道が多い']],'風・路面・車種でも消費量は変わります');
     }else{
-        label.textContent = "REPS";
-        note.textContent = "合計回数を選択（1回あたり約4秒として推定）";
-        for(let reps = 1; reps <= 100; reps++){
-            amount.add(new Option(`${reps}回`, reps));
-        }
+        html+=fieldHtml('muscleMinutes','SESSION TIME（分）','number','30','1','240','1','休憩を含む、この種目に使った合計時間');
+        html+=fieldHtml('muscleSets','SETS','number','3','1','30','1','実施セット数');
+        html+=fieldHtml('muscleReps','REPS / SET','number','10','1','100','1','1セットの平均回数');
+        html+=fieldHtml('muscleLoad','LOAD（kg）','number','40','0','1000','0.5','自重種目は追加重量。補助ありは0でも可');
+        html+=fieldHtml('muscleRest','REST / SET（秒）','number','90','0','600','5','セット間の平均休憩');
+        html+=selectHtml('muscleEffort','EFFORT',[['easy','余裕あり（RPE 5-6）'],['normal','普通（RPE 7-8）'],['hard','限界近く（RPE 9-10）']],'フォーム・可動域・テンポを含めた主観的強度');
     }
+    box.innerHTML=html;
 }
 
-function calculateMuscleCalories(){
-    const sex = document.getElementById("muscleSex")?.value;
-    const age = Number(document.getElementById("muscleAge")?.value);
-    const height = Number(document.getElementById("muscleHeight")?.value);
-    const weight = Number(document.getElementById("muscleWeight")?.value);
-    const exercise = document.getElementById("muscleExercise")?.value;
-    const intensity = document.getElementById("muscleIntensity")?.value;
-    const amount = Number(document.getElementById("muscleAmount")?.value);
-    const result = document.getElementById("muscleResult");
+function clamp(v,min,max){return Math.min(max,Math.max(min,v));}
+function kcalFromMet(met,weight,minutes){return met*3.5*weight/200*minutes;}
 
-    if(!sex || !age || !height || !weight || !exercise || !intensity || !amount){
-        alert("すべての項目を入力してください。");
-        return;
+function walkingRunningMet(speedKmh,gradePercent,forceMode){
+    const speedMmin=speedKmh*1000/60;
+    const grade=gradePercent/100;
+    const running=forceMode==='run'||(forceMode!=='walk'&&speedKmh>=8);
+    const vo2=running ? (0.2*speedMmin+0.9*speedMmin*grade+3.5) : (0.1*speedMmin+1.8*speedMmin*grade+3.5);
+    return clamp(vo2/3.5,1.5,25);
+}
+function outdoorBikeMet(speed,terrain){
+    let met=speed<16?4.0:speed<19?6.8:speed<22.5?8.0:speed<25.5?10.0:speed<30.5?12.0:15.8;
+    if(terrain==='rolling')met+=1.0;
+    if(terrain==='hill')met+=2.5;
+    return clamp(met,3,20);
+}
+function strengthMet(exercise,effort,workRatio,loadRatio){
+    const base={easy:3.0,normal:4.5,hard:6.0}[effort]||4.5;
+    let exerciseBonus=['スクワット','マシンスクワット','レッグプレス','チンニング','ディップス'].includes(exercise)?0.5:0;
+    let densityBonus=clamp((workRatio-0.25)*4,-0.6,1.2);
+    let loadBonus=clamp(loadRatio*0.8,0,1.0);
+    return clamp(base+exerciseBonus+densityBonus+loadBonus,2.5,8.5);
+}
+
+function calculateDetailedMuscleCalories(){
+    const sex=document.getElementById('muscleSex')?.value;
+    const age=Number(document.getElementById('muscleAge')?.value);
+    const height=Number(document.getElementById('muscleHeight')?.value);
+    const weight=Number(document.getElementById('muscleWeight')?.value);
+    const bodyFat=Number(document.getElementById('muscleBodyFat')?.value);
+    const exercise=document.getElementById('muscleExercise')?.value;
+    const result=document.getElementById('muscleResult');
+    if(!sex||!age||!height||!weight||!exercise||!result){alert('性別・年齢・身長・体重・種目を入力してください。');return;}
+    if(age<10||age>100||height<100||height>250||weight<30||weight>300){alert('年齢・身長・体重を入力範囲内で設定してください。');return;}
+
+    let minutes=Number(document.getElementById('muscleMinutes')?.value);
+    if(!minutes||minutes<=0){alert('運動時間を入力してください。');return;}
+    let met=1,method='',details='';
+
+    if(exercise==='トレッドミル'){
+        const speed=Number(document.getElementById('muscleSpeed')?.value),incline=Number(document.getElementById('muscleIncline')?.value)||0,mode=document.getElementById('muscleMode')?.value||'auto';
+        if(!speed){alert('速度を入力してください。');return;}
+        met=walkingRunningMet(speed,incline,mode); method='速度と傾斜を用いた歩行・走行の酸素消費量推定'; details=speed+' km/h・傾斜 '+incline+'%';
+    }else if(exercise==='エアロバイク'){
+        const watts=Number(document.getElementById('muscleWatts')?.value),fallback=document.getElementById('muscleBikeFallback')?.value||'normal';
+        if(watts>0){const vo2=7+(1.8*watts*6.12/weight);met=clamp(vo2/3.5,2,20);method='平均ワット数から酸素消費量を推定';details=watts+' W';}
+        else{met={easy:4.0,normal:6.8,hard:10.0}[fallback];method='選択した強度の標準MET値';details={easy:'イージー',normal:'普通',hard:'キツい'}[fallback];}
+    }else if(exercise==='ウォーキング'){
+        const speed=Number(document.getElementById('muscleSpeed')?.value),grade=Number(document.getElementById('muscleGrade')?.value)||0;
+        if(!speed){alert('平均速度を入力してください。');return;}
+        met=walkingRunningMet(speed,grade,'walk');method='平均速度と平均勾配による歩行推定';details=speed+' km/h・勾配 '+grade+'%';
+    }else if(exercise==='自転車'){
+        const speed=Number(document.getElementById('muscleSpeed')?.value),terrain=document.getElementById('muscleTerrain')?.value||'flat';
+        if(!speed){alert('平均速度を入力してください。');return;}
+        met=outdoorBikeMet(speed,terrain);method='平均速度帯と地形に応じたMET値';details=speed+' km/h・'+({flat:'平坦',rolling:'アップダウン',hill:'坂道多め'}[terrain]);
+    }else{
+        const sets=Number(document.getElementById('muscleSets')?.value),reps=Number(document.getElementById('muscleReps')?.value),load=Number(document.getElementById('muscleLoad')?.value)||0,rest=Number(document.getElementById('muscleRest')?.value)||0,effort=document.getElementById('muscleEffort')?.value||'normal';
+        if(!sets||!reps){alert('セット数と回数を入力してください。');return;}
+        const estimatedActiveSeconds=sets*reps*3.5;
+        const estimatedRestSeconds=Math.max(0,sets-1)*rest;
+        const sessionSeconds=minutes*60;
+        const workRatio=clamp(estimatedActiveSeconds/sessionSeconds,0.05,0.85);
+        const loadRatio=load/weight;
+        met=strengthMet(exercise,effort,workRatio,loadRatio);
+        method='種目・主観強度・運動密度・重量を組み合わせた筋トレ推定';
+        details=sets+'セット × '+reps+'回・'+load+'kg・休憩'+rest+'秒';
     }
-    if(age < 10 || age > 100 || height < 100 || height > 250 || weight < 30 || weight > 300){
-        alert("年齢・身長・体重を入力範囲内で設定してください。");
-        return;
-    }
 
-    const isCardio = cardioMenus.includes(exercise);
-    const minutes = isCardio ? amount : Math.max(1, amount * 4 / 60);
-    const met = muscleMetTable[exercise][intensity];
-    const calories = met * 3.5 * weight / 200 * minutes;
-    const bmr = sex === "male"
-        ? 10 * weight + 6.25 * height - 5 * age + 5
-        : 10 * weight + 6.25 * height - 5 * age - 161;
-    const intensityLabel = intensity === "easy" ? "イージー" : intensity === "hard" ? "キツい" : "普通";
-    const amountText = isCardio ? `${amount}分` : `${amount}回（運動時間 約${minutes.toFixed(1)}分換算）`;
+    const gross=kcalFromMet(met,weight,minutes);
+    const net=Math.max(0,kcalFromMet(Math.max(0,met-1),weight,minutes));
+    const uncertainty=cardioMenus.includes(exercise)?0.12:0.22;
+    const low=Math.round(gross*(1-uncertainty)),high=Math.round(gross*(1+uncertainty));
+    const bmrMifflin=sex==='male'?10*weight+6.25*height-5*age+5:10*weight+6.25*height-5*age-161;
+    let bmrText='Mifflin-St Jeor式：約 '+Math.round(bmrMifflin)+' kcal/日';
+    if(bodyFat>=3&&bodyFat<=70){const lbm=weight*(1-bodyFat/100);const katch=370+21.6*lbm;bmrText+='<br>体脂肪率使用：約 '+Math.round(katch)+' kcal/日';}
+    const showNet=document.getElementById('muscleNetCalories')?.checked;
 
-    result.innerHTML = `
-        <div>ESTIMATED CALORIES</div>
-        <div class="muscle-calorie">約 ${Math.round(calories)} kcal</div>
-        <div class="muscle-detail">
-            ${exercise} ／ ${intensityLabel} ／ ${amountText}<br>
-            推定基礎代謝：${Math.round(bmr)} kcal／日<br>
-            使用MET値：${met}
-        </div>
-        <div class="muscle-warning">
-            ※ 消費カロリーは体格・フォーム・休憩時間・速度・負荷などで変化する目安です。<br>
-            ※ 筋トレ種目は、1回あたり約4秒の運動として概算しています。入力内容や結果は保存されません。
-        </div>`;
-    result.classList.add("show");
+    result.innerHTML='<div>ESTIMATED EXERCISE CALORIES</div>'+
+      '<div class="muscle-calorie">約 '+Math.round(gross)+' kcal</div>'+
+      '<div class="muscle-range">推定範囲：'+low+'〜'+high+' kcal</div>'+
+      '<div class="muscle-result-grid">'+
+        '<div class="muscle-result-box">運動時間<b>'+minutes+'分</b></div>'+
+        '<div class="muscle-result-box">推定METs<b>'+met.toFixed(1)+'</b></div>'+
+        '<div class="muscle-result-box">1分あたり<b>'+((gross/minutes)||0).toFixed(1)+' kcal</b></div>'+
+      '</div>'+
+      (showNet?'<div class="muscle-detail">安静分を除いた純消費：約 '+Math.round(net)+' kcal</div>':'')+
+      '<div class="muscle-detail">'+exercise+' ／ '+details+'<br>推定基礎代謝：'+bmrText+'</div>'+
+      '<div class="muscle-method"><b>計算方法：</b>'+method+'。消費カロリーは METs × 3.5 × 体重 ÷ 200 × 分で算出。</div>'+
+      '<div class="muscle-warning">※ 心拍数、フォーム、筋量、気温、マシン誤差などで実際の値は変わります。特に筋トレは正確な実測が難しいため幅を広めに表示しています。医療・栄養管理には測定機器や専門家の評価を利用してください。入力内容は保存されません。</div>';
+    result.classList.add('show');
 }
 
 
