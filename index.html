@@ -897,7 +897,7 @@ FAVORITE背景 強制表示
 
 .favorite-book{
 background-image:
-url("./favorite-background.png?v=5") !important;
+none !important;
 
 background-position:
     center center !important;
@@ -1004,6 +1004,96 @@ display:none !important;
 .muscle-range{font-size:17px;font-weight:bold;color:#70420c;margin-top:8px;}
 .muscle-method{margin-top:12px;padding:12px;border-radius:10px;background:rgba(107,59,12,.08);font-size:13px;line-height:1.65;text-align:left;}
 @media(max-width:700px){.muscle-dynamic{grid-template-columns:1fr}.muscle-result-grid{grid-template-columns:1fr}.muscle-span-2{grid-column:auto;}}
+
+
+
+/* ==============================
+   PAGE BACKGROUND / LOCATION / TRANSITION
+============================== */
+.record{
+    --page-bg:url("backgrounds/home_character_background.png");
+    position:relative;
+    isolation:isolate;
+    background:
+        linear-gradient(rgba(255,248,225,.82),rgba(239,216,173,.88)),
+        var(--page-bg) center / cover no-repeat;
+    transition:background-image .35s ease, box-shadow .35s ease;
+}
+.record::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    border-radius:10px;
+    pointer-events:none;
+    background:radial-gradient(circle at center,rgba(255,253,239,.34),rgba(79,42,8,.08));
+}
+.current-location{
+    position:sticky;
+    top:0;
+    z-index:12;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:-2px 0 15px;
+    padding:9px 14px;
+    border:1px solid rgba(107,59,12,.55);
+    border-left:5px solid #8b5a20;
+    border-radius:8px;
+    background:rgba(255,247,220,.93);
+    color:#5a3000;
+    font-size:14px;
+    letter-spacing:1px;
+    box-shadow:0 4px 12px rgba(59,31,7,.18);
+    backdrop-filter:blur(4px);
+}
+.current-location-label{font-size:11px;font-weight:bold;opacity:.68;letter-spacing:2px;}
+.current-location-path{font-weight:bold;}
+.location-separator{opacity:.55;}
+#content.page-transition{
+    animation:recordPageTurn .72s cubic-bezier(.18,.8,.22,1);
+    transform-origin:left center;
+}
+.record.page-changing{
+    animation:recordBackgroundPulse .72s ease;
+}
+.record.page-changing::after{
+    content:"";
+    position:absolute;
+    inset:-10%;
+    z-index:20;
+    pointer-events:none;
+    background:linear-gradient(110deg,transparent 25%,rgba(255,244,176,0) 38%,rgba(255,244,176,.82) 49%,rgba(255,255,255,.92) 52%,rgba(255,214,105,.35) 58%,transparent 72%);
+    transform:translateX(-120%) skewX(-10deg);
+    animation:recordLightSweep .72s ease-out;
+    mix-blend-mode:screen;
+}
+@keyframes recordPageTurn{
+    0%{opacity:0;transform:perspective(1100px) rotateY(-13deg) translateX(34px) scale(.985);filter:blur(4px) brightness(1.2)}
+    38%{opacity:.45;transform:perspective(1100px) rotateY(-6deg) translateX(18px) scale(.992);filter:blur(1.5px) brightness(1.12)}
+    72%{opacity:.94;transform:perspective(1100px) rotateY(1.5deg) translateX(-3px) scale(1.006);filter:none}
+    100%{opacity:1;transform:perspective(1100px) rotateY(0) translateX(0) scale(1);filter:none}
+}
+@keyframes recordLightSweep{
+    0%{opacity:0;transform:translateX(-120%) skewX(-10deg)}
+    18%{opacity:1}
+    100%{opacity:0;transform:translateX(120%) skewX(-10deg)}
+}
+@keyframes recordBackgroundPulse{
+    0%{filter:brightness(.92) saturate(.9);box-shadow:inset 0 0 0 rgba(255,214,112,0),0 0 15px #593000}
+    45%{filter:brightness(1.08) saturate(1.08);box-shadow:inset 0 0 42px rgba(255,235,166,.34),0 0 30px rgba(255,203,92,.42)}
+    100%{filter:none;box-shadow:inset 0 0 25px #fff7d5,0 0 15px #593000}
+}
+@media (prefers-reduced-motion:reduce){
+    #content.page-transition{animation:recordFade .15s linear}
+    .record.page-changing{animation:none}
+    .record.page-changing::after{display:none}
+    @keyframes recordFade{from{opacity:0}to{opacity:1}}
+}
+@media(max-width:620px){
+    .current-location{font-size:12px;padding:8px 10px;gap:6px;}
+    .current-location-label{display:none;}
+}
 
 </style>
 
@@ -1181,6 +1271,10 @@ DAYS
 
 </h2>
 
+<div id="currentLocation" class="current-location" aria-live="polite">
+    <span class="current-location-label">CURRENT LOCATION</span>
+    <span class="current-location-path"><span id="locationCategory">HOME</span><span class="location-separator"> / </span><span id="locationPage">RECORD</span></span>
+</div>
 
 <div id="content">
 
@@ -2241,6 +2335,55 @@ function updateMenu() {
     }
 }
 
+
+const pageCategories = {
+    "CHARACTER":"PROFILE", "PREFERENCES":"PROFILE", "MUSCLE":"PROFILE", "SKILL":"PROFILE", "TITLE":"PROFILE",
+    "ITEM BOX":"COLLECTION", "GALLERY":"COLLECTION", "DISNEY GUIDE":"COLLECTION", "PERFORMANCE RECORD":"COLLECTION",
+    "ACHIEVEMENTS":"ADVENTURE", "AONO GACHA":"ADVENTURE", "AONO COLLECTION":"ADVENTURE", "SECRET GAME":"ADVENTURE",
+    "MESSAGE BOARD":"SYSTEM", "CONTACT":"SYSTEM", "UPDATE LOG":"SYSTEM", "OPTION":"SYSTEM"
+};
+
+const pageBackgrounds = {
+    "CHARACTER":"home_character_background.png",
+    "PREFERENCES":"preferences_background.png",
+    "MUSCLE":"muscle_background.png",
+    "SKILL":"performance_record_background.png",
+    "TITLE":"achievements_background.png",
+    "ITEM BOX":"item_box_background.png",
+    "GALLERY":"gallery_background.png",
+    "DISNEY GUIDE":"disney_guide_background.png",
+    "PERFORMANCE RECORD":"performance_record_background.png",
+    "ACHIEVEMENTS":"achievements_background.png",
+    "AONO GACHA":"aono_gacha_background.png",
+    "AONO COLLECTION":"aono_gacha_background.png",
+    "SECRET GAME":"aono_gacha_background.png",
+    "MESSAGE BOARD":"message_board_background.png",
+    "CONTACT":"message_board_background.png",
+    "UPDATE LOG":"home_character_background.png",
+    "OPTION":"home_character_background.png"
+};
+
+function applyPagePresentation(name){
+    const recordWindow=document.querySelector('.window.record');
+    const category=pageCategories[name] || 'RECORD';
+    const background=pageBackgrounds[name] || 'home_character_background.png';
+    document.getElementById('locationCategory').textContent=category;
+    document.getElementById('locationPage').textContent=name;
+    recordWindow.style.setProperty('--page-bg','url("backgrounds/'+background+'")');
+
+    const content=document.getElementById('content');
+    recordWindow.classList.remove('page-changing');
+    content.classList.remove('page-transition');
+    void recordWindow.offsetWidth;
+    recordWindow.classList.add('page-changing');
+    content.classList.add('page-transition');
+    window.clearTimeout(window.__recordTransitionTimer);
+    window.__recordTransitionTimer=window.setTimeout(()=>{
+        recordWindow.classList.remove('page-changing');
+        content.classList.remove('page-transition');
+    },760);
+}
+
 function openRecord() {
     const name = menuItems[selectedIndex]
         .textContent
@@ -2250,6 +2393,8 @@ function openRecord() {
     const content = document.getElementById("content");
 
     content.innerHTML = records[name] || `<div class="item-card"><div class="item-title">RECORD NOT FOUND</div></div>`;
+
+    applyPagePresentation(name);
 
     if(name === "PREFERENCES"){
     initializeFavoriteTabs();
@@ -2467,6 +2612,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 updateMenu();
+applyPagePresentation("CHARACTER");
 
 let secretCode = "";
 
