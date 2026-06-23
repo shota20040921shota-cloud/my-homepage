@@ -920,6 +920,74 @@ display:none !important;
 }
 
 
+
+
+/* ======================
+   COLLAPSIBLE MENU
+====================== */
+.menu-category{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:11px 12px;
+    margin:9px 0 5px;
+    border:2px solid #8a5a22;
+    border-radius:10px;
+    background:rgba(255,245,210,.78);
+    color:#6b3b0c;
+    font:700 18px "Yu Mincho","MS Mincho",serif;
+    cursor:pointer;
+    pointer-events:auto;
+    text-shadow:none;
+    transition:.2s;
+}
+.menu-category:hover{
+    background:#ead19e;
+    transform:translateY(-1px);
+    box-shadow:0 0 10px rgba(139,90,32,.3);
+}
+.menu-category::after{
+    content:"＋";
+    font-size:20px;
+}
+.menu-category.open::after{content:"－";}
+.menu-group{
+    display:none;
+    padding:2px 0 6px 10px;
+    border-left:2px solid rgba(138,90,34,.35);
+}
+.menu-group.open{display:block;animation:menuOpen .2s ease;}
+@keyframes menuOpen{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+
+/* ======================
+   MUSCLE CALORIE CALCULATOR
+====================== */
+.muscle-form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+}
+.muscle-field{display:flex;flex-direction:column;gap:7px;}
+.muscle-field label{font-size:15px;font-weight:bold;color:#6b3b0c;letter-spacing:1px;}
+.muscle-input{
+    width:100%;padding:11px 12px;border:3px solid #8a5a22;border-radius:10px;
+    background:#fff4d5;color:#3a2200;font:18px "Yu Mincho","MS Mincho",serif;
+}
+.muscle-unit-note{margin-top:8px;font-size:14px;color:#795633;}
+.muscle-actions{display:flex;justify-content:center;margin-top:18px;}
+.muscle-actions .gacha-button{margin:0;}
+.muscle-result{
+    display:none;margin-top:18px;padding:20px;border:4px solid #8a5a22;border-radius:16px;
+    background:rgba(255,245,210,.92);text-align:center;box-shadow:inset 0 0 15px #fff8d8;
+}
+.muscle-result.show{display:block;animation:favoritePageIn .3s ease;}
+.muscle-calorie{font-size:42px;font-weight:bold;color:#8b3f00;margin:8px 0;}
+.muscle-detail{font-size:16px;line-height:1.8;color:#5a3000;}
+.muscle-warning{font-size:13px;line-height:1.7;color:#806344;margin-top:12px;}
+@media(max-width:700px){.muscle-form-grid{grid-template-columns:1fr;}.muscle-calorie{font-size:34px;}}
+
 </style>
 
 </head>
@@ -1042,62 +1110,37 @@ DAYS
 </h2>
 
 
-<div class="menu-category">
-📜 PROFILE
+<button class="menu-category open" type="button">📜 PROFILE</button>
+<div class="menu-group open">
+    <div class="menu-item">CHARACTER</div>
+    <div class="menu-item">PREFERENCES</div>
+    <div class="menu-item">MUSCLE</div>
+    <div class="menu-item">SKILL</div>
+    <div class="menu-item">TITLE</div>
 </div>
 
-<div class="menu-item">CHARACTER</div>
-<div class="menu-item">PREFERENCES</div>
-<div class="menu-item">SKILL</div>
-<div class="menu-item">TITLE</div>
-
-
-<div class="menu-category">
-🎒 COLLECTION
+<button class="menu-category" type="button">🎒 COLLECTION</button>
+<div class="menu-group">
+    <div class="menu-item">ITEM BOX</div>
+    <div class="menu-item">GALLERY</div>
+    <div class="menu-item">DISNEY GUIDE</div>
+    <div class="menu-item">PERFORMANCE RECORD</div>
 </div>
 
-<div class="menu-item">ITEM BOX</div>
-<div class="menu-item">GALLERY</div>
-<div class="menu-item">DISNEY GUIDE</div>
-<div class="menu-item">PERFORMANCE RECORD</div>
-
-
-<div class="menu-category">
-⚔ ADVENTURE
+<button class="menu-category" type="button">⚔ ADVENTURE</button>
+<div class="menu-group">
+    <div class="menu-item">ACHIEVEMENTS</div>
+    <div class="menu-item">AONO GACHA</div>
+    <div class="menu-item">AONO COLLECTION</div>
+    <div class="menu-item">SECRET GAME</div>
 </div>
 
-<div class="menu-item">
-ACHIEVEMENTS
-</div>
-
-<div class="menu-item">
-AONO GACHA
-</div>
-    
-    <div class="menu-item">
-AONO COLLECTION
-</div>
-
-<div class="menu-item">
-SECRET GAME
-</div>
-
-
-<div class="menu-category">
-📮 SYSTEM
-</div>
-
-<div class="menu-item">
-MESSAGE BOARD
-</div>
+<button class="menu-category" type="button">📮 SYSTEM</button>
+<div class="menu-group">
+    <div class="menu-item">MESSAGE BOARD</div>
     <div class="menu-item">CONTACT</div>
-
-<div class="menu-item">
-UPDATE LOG
-</div>
-
-<div class="menu-item">
-OPTION
+    <div class="menu-item">UPDATE LOG</div>
+    <div class="menu-item">OPTION</div>
 </div>
 
 
@@ -1285,6 +1328,87 @@ const records = {
     </div>
 </section>
 `,
+    "MUSCLE": `
+<div class="record-section">
+  <div class="item-card">
+    <div class="item-title">💪 MUSCLE CALORIE</div>
+    <div class="item-text">
+      身長・体重などの情報とトレーニング内容から、消費カロリーの目安を計算します。<br>
+      計算結果や入力内容は保存されません。
+    </div>
+  </div>
+
+  <div class="item-card">
+    <div class="item-title">🔥 CALORIE INPUT</div>
+    <div class="muscle-form-grid">
+      <div class="muscle-field">
+        <label for="muscleSex">SEX</label>
+        <select id="muscleSex" class="muscle-input">
+          <option value="male">男性</option>
+          <option value="female">女性</option>
+        </select>
+      </div>
+
+      <div class="muscle-field">
+        <label for="muscleAge">AGE</label>
+        <input id="muscleAge" class="muscle-input" type="number" min="10" max="100" value="21" inputmode="numeric">
+      </div>
+
+      <div class="muscle-field">
+        <label for="muscleHeight">HEIGHT（cm）</label>
+        <input id="muscleHeight" class="muscle-input" type="number" min="100" max="250" step="0.1" placeholder="例：175">
+      </div>
+
+      <div class="muscle-field">
+        <label for="muscleWeight">WEIGHT（kg）</label>
+        <input id="muscleWeight" class="muscle-input" type="number" min="30" max="300" step="0.1" placeholder="例：80">
+      </div>
+
+      <div class="muscle-field">
+        <label for="muscleExercise">MENU</label>
+        <select id="muscleExercise" class="muscle-input" onchange="updateMuscleUnit()">
+          <option value="トレッドミル">トレッドミル</option>
+          <option value="エアロバイク">エアロバイク</option>
+          <option value="ウォーキング">ウォーキング</option>
+          <option value="自転車">自転車</option>
+          <option value="ベンチプレス">ベンチプレス</option>
+          <option value="ディップス">ディップス</option>
+          <option value="ペックフライ">ペックフライ</option>
+          <option value="ラットプルダウン">ラットプルダウン</option>
+          <option value="チンニング">チンニング</option>
+          <option value="マシンスクワット">マシンスクワット</option>
+          <option value="スクワット">スクワット</option>
+          <option value="レッグプレス">レッグプレス</option>
+          <option value="レッグエクステンション">レッグエクステンション</option>
+          <option value="アブベンチ（腹筋）">アブベンチ（腹筋）</option>
+        </select>
+      </div>
+
+      <div class="muscle-field">
+        <label for="muscleIntensity">INTENSITY</label>
+        <select id="muscleIntensity" class="muscle-input">
+          <option value="easy">イージー</option>
+          <option value="normal" selected>普通</option>
+          <option value="hard">キツい</option>
+        </select>
+      </div>
+
+      <div class="muscle-field">
+        <label id="muscleAmountLabel" for="muscleAmount">TIME</label>
+        <select id="muscleAmount" class="muscle-input"></select>
+        <div id="muscleUnitNote" class="muscle-unit-note">10分単位で選択</div>
+      </div>
+    </div>
+
+    <div class="muscle-actions">
+      <button class="gacha-button" type="button" onclick="calculateMuscleCalories()">🔥 消費カロリーを計算</button>
+    </div>
+
+    <div id="muscleResult" class="muscle-result" aria-live="polite"></div>
+  </div>
+</div>
+`,
+
     "SKILL":
 `
 <div class="record-section">
@@ -2039,6 +2163,27 @@ CHARACTER / FAVORITE / SKILL 追加
 };
 
     
+const menuCategories = document.querySelectorAll(".menu-category");
+
+menuCategories.forEach(category => {
+    category.addEventListener("click", () => {
+        const group = category.nextElementSibling;
+        const willOpen = !category.classList.contains("open");
+
+        menuCategories.forEach(other => {
+            other.classList.remove("open");
+            if (other.nextElementSibling?.classList.contains("menu-group")) {
+                other.nextElementSibling.classList.remove("open");
+            }
+        });
+
+        if (willOpen) {
+            category.classList.add("open");
+            group?.classList.add("open");
+        }
+    });
+});
+
 const menuItems = document.querySelectorAll(".menu-item");
 let selectedIndex = 0;
 
@@ -2051,6 +2196,16 @@ function updateMenu() {
     menuItems[selectedIndex].classList.add("selected");
     menuItems[selectedIndex].textContent =
         "▶ " + menuItems[selectedIndex].textContent;
+
+    const group = menuItems[selectedIndex].closest(".menu-group");
+    if (group && !group.classList.contains("open")) {
+        menuCategories.forEach(category => {
+            category.classList.remove("open");
+            category.nextElementSibling?.classList.remove("open");
+        });
+        group.classList.add("open");
+        group.previousElementSibling?.classList.add("open");
+    }
 }
 
 function openRecord() {
@@ -2077,11 +2232,110 @@ function openRecord() {
     if(name === "MESSAGE BOARD"){
     showBoard();
 }
+    if(name === "MUSCLE"){
+        initializeMuscleCalculator();
+    }
 
     if (window.twttr) {
         twttr.widgets.load(content);
     }
 }
+
+
+const cardioMenus = ["トレッドミル", "エアロバイク", "ウォーキング", "自転車"];
+
+const muscleMetTable = {
+    "トレッドミル": {easy:4.3, normal:7.0, hard:10.0},
+    "エアロバイク": {easy:4.0, normal:6.8, hard:10.0},
+    "ウォーキング": {easy:2.8, normal:3.8, hard:5.0},
+    "自転車": {easy:4.0, normal:6.8, hard:10.0},
+    "ベンチプレス": {easy:3.0, normal:5.0, hard:6.0},
+    "ディップス": {easy:3.5, normal:5.5, hard:7.0},
+    "ペックフライ": {easy:3.0, normal:5.0, hard:6.0},
+    "ラットプルダウン": {easy:3.0, normal:5.0, hard:6.0},
+    "チンニング": {easy:4.0, normal:6.0, hard:8.0},
+    "マシンスクワット": {easy:3.5, normal:5.5, hard:7.0},
+    "スクワット": {easy:4.0, normal:6.0, hard:8.0},
+    "レッグプレス": {easy:3.5, normal:5.5, hard:7.0},
+    "レッグエクステンション": {easy:3.0, normal:5.0, hard:6.0},
+    "アブベンチ（腹筋）": {easy:3.5, normal:5.0, hard:6.5}
+};
+
+function initializeMuscleCalculator(){
+    updateMuscleUnit();
+}
+
+function updateMuscleUnit(){
+    const exercise = document.getElementById("muscleExercise");
+    const amount = document.getElementById("muscleAmount");
+    const label = document.getElementById("muscleAmountLabel");
+    const note = document.getElementById("muscleUnitNote");
+    const result = document.getElementById("muscleResult");
+    if(!exercise || !amount) return;
+
+    if(result){ result.classList.remove("show"); result.innerHTML = ""; }
+    const isCardio = cardioMenus.includes(exercise.value);
+    amount.innerHTML = "";
+
+    if(isCardio){
+        label.textContent = "TIME";
+        note.textContent = "10分単位で選択";
+        for(let minutes = 10; minutes <= 180; minutes += 10){
+            amount.add(new Option(`${minutes}分`, minutes));
+        }
+    }else{
+        label.textContent = "REPS";
+        note.textContent = "合計回数を選択（1回あたり約4秒として推定）";
+        for(let reps = 1; reps <= 100; reps++){
+            amount.add(new Option(`${reps}回`, reps));
+        }
+    }
+}
+
+function calculateMuscleCalories(){
+    const sex = document.getElementById("muscleSex")?.value;
+    const age = Number(document.getElementById("muscleAge")?.value);
+    const height = Number(document.getElementById("muscleHeight")?.value);
+    const weight = Number(document.getElementById("muscleWeight")?.value);
+    const exercise = document.getElementById("muscleExercise")?.value;
+    const intensity = document.getElementById("muscleIntensity")?.value;
+    const amount = Number(document.getElementById("muscleAmount")?.value);
+    const result = document.getElementById("muscleResult");
+
+    if(!sex || !age || !height || !weight || !exercise || !intensity || !amount){
+        alert("すべての項目を入力してください。");
+        return;
+    }
+    if(age < 10 || age > 100 || height < 100 || height > 250 || weight < 30 || weight > 300){
+        alert("年齢・身長・体重を入力範囲内で設定してください。");
+        return;
+    }
+
+    const isCardio = cardioMenus.includes(exercise);
+    const minutes = isCardio ? amount : Math.max(1, amount * 4 / 60);
+    const met = muscleMetTable[exercise][intensity];
+    const calories = met * 3.5 * weight / 200 * minutes;
+    const bmr = sex === "male"
+        ? 10 * weight + 6.25 * height - 5 * age + 5
+        : 10 * weight + 6.25 * height - 5 * age - 161;
+    const intensityLabel = intensity === "easy" ? "イージー" : intensity === "hard" ? "キツい" : "普通";
+    const amountText = isCardio ? `${amount}分` : `${amount}回（運動時間 約${minutes.toFixed(1)}分換算）`;
+
+    result.innerHTML = `
+        <div>ESTIMATED CALORIES</div>
+        <div class="muscle-calorie">約 ${Math.round(calories)} kcal</div>
+        <div class="muscle-detail">
+            ${exercise} ／ ${intensityLabel} ／ ${amountText}<br>
+            推定基礎代謝：${Math.round(bmr)} kcal／日<br>
+            使用MET値：${met}
+        </div>
+        <div class="muscle-warning">
+            ※ 消費カロリーは体格・フォーム・休憩時間・速度・負荷などで変化する目安です。<br>
+            ※ 筋トレ種目は、1回あたり約4秒の運動として概算しています。入力内容や結果は保存されません。
+        </div>`;
+    result.classList.add("show");
+}
+
 
 function initializeFavoriteTabs(){
     const tabs = document.querySelectorAll(".favorite-tab");
