@@ -1096,6 +1096,211 @@ display:none !important;
     .current-location-label{display:none;}
 }
 
+
+/* ==============================
+   THEMED RECORD HEADER
+============================== */
+.record > h2{
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    min-height:58px;
+    padding:10px 64px 10px 20px;
+    border:1px solid rgba(255,255,255,.55);
+    border-bottom:5px solid var(--heading-accent,#8b5a20);
+    border-radius:14px 14px 8px 8px;
+    background:
+        linear-gradient(100deg,rgba(255,255,255,.88),rgba(255,244,211,.76)),
+        linear-gradient(90deg,var(--heading-soft,#e4c48c),transparent);
+    color:var(--heading-ink,#4a2500);
+    font-size:25px;
+    letter-spacing:4px;
+    text-shadow:1px 1px 0 rgba(255,255,255,.8);
+    box-shadow:inset 0 0 16px rgba(255,255,255,.72),0 5px 14px rgba(59,31,7,.22);
+    transition:.35s background,.35s border-color,.35s color;
+}
+.record > h2::before{
+    content:var(--heading-icon,"📜");
+    display:grid;
+    place-items:center;
+    width:38px;height:38px;
+    margin-right:12px;
+    border-radius:50%;
+    background:var(--heading-accent,#8b5a20);
+    color:white;
+    font-size:20px;
+    box-shadow:0 0 0 4px rgba(255,255,255,.55),0 4px 10px rgba(57,28,4,.25);
+}
+.record > h2::after{
+    content:"";
+    position:absolute;
+    right:-20px;top:-38px;
+    width:110px;height:110px;
+    border:2px dashed var(--heading-accent,#8b5a20);
+    border-radius:50%;
+    opacity:.18;
+    transform:rotate(15deg);
+}
+.record[data-page-theme="profile"]{--heading-accent:#7b4a18;--heading-soft:#dec18f;--heading-ink:#4a2500;--heading-icon:"🧭";}
+.record[data-page-theme="preferences"]{--heading-accent:#a8759a;--heading-soft:#efd9e8;--heading-ink:#694f65;--heading-icon:"✦";}
+.record[data-page-theme="muscle"]{--heading-accent:#8b3f24;--heading-soft:#e2b89f;--heading-ink:#592916;--heading-icon:"◆";}
+.record[data-page-theme="collection"]{--heading-accent:#916523;--heading-soft:#e6cd9e;--heading-ink:#533509;--heading-icon:"🗝";}
+.record[data-page-theme="gallery"]{--heading-accent:#596f9d;--heading-soft:#cdd7ec;--heading-ink:#35405f;--heading-icon:"✧";}
+.record[data-page-theme="disney-guide"]{--heading-accent:#428590;--heading-soft:#bfe0d8;--heading-ink:#28545b;--heading-icon:"⚓";}
+.record[data-page-theme="music"]{--heading-accent:#7b4038;--heading-soft:#dfbdb1;--heading-ink:#512921;--heading-icon:"♪";}
+.record[data-page-theme="achievement"]{--heading-accent:#9a721c;--heading-soft:#ecd494;--heading-ink:#5f4306;--heading-icon:"🏅";}
+.record[data-page-theme="gacha"]{--heading-accent:#6b4ca3;--heading-soft:#d1c3eb;--heading-ink:#493369;--heading-icon:"✦";}
+.record[data-page-theme="message"]{--heading-accent:#76543b;--heading-soft:#d9c2a8;--heading-ink:#4b3423;--heading-icon:"✉";}
+.record[data-page-theme="system"]{--heading-accent:#596b57;--heading-soft:#cbd7c5;--heading-ink:#354333;--heading-icon:"⚙";}
+
+/* Clickable current location */
+.location-link{
+    appearance:none;border:0;background:transparent;padding:3px 5px;
+    color:inherit;font:inherit;font-weight:bold;letter-spacing:inherit;
+    border-radius:6px;cursor:pointer;transition:.18s;
+}
+.location-link:hover,.location-link:focus-visible{
+    background:rgba(139,90,32,.15);color:#8b3f00;outline:1px solid rgba(139,90,32,.28);
+    transform:translateY(-1px);
+}
+.location-link:active{transform:translateY(1px) scale(.98)}
+
+/* Page-specific cursor sparkle (desktop only) */
+.cursor-spark{
+    position:fixed;left:0;top:0;z-index:99999;pointer-events:none;
+    font-size:var(--spark-size,15px);line-height:1;
+    color:var(--spark-color,#d59b33);
+    text-shadow:0 0 7px currentColor,0 0 13px currentColor;
+    transform:translate(-50%,-50%);
+    animation:cursorSparkFly .72s ease-out forwards;
+    will-change:transform,opacity;
+}
+@keyframes cursorSparkFly{
+    0%{opacity:.95;transform:translate(-50%,-50%) scale(.55) rotate(0deg)}
+    55%{opacity:.75;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.15) rotate(100deg)}
+    100%{opacity:0;transform:translate(calc(-50% + var(--dx2)),calc(-50% + var(--dy2))) scale(.25) rotate(210deg)}
+}
+@media(max-width:900px),(pointer:coarse){.cursor-spark{display:none!important}}
+@media(prefers-reduced-motion:reduce){.cursor-spark{display:none!important}}
+
+
+
+/* =========================================================
+   MENU VISUAL UPGRADE v5
+   category textures / thumbnails / NEW badge / open animation
+========================================================= */
+.menu-category{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+    min-height:52px;
+    padding:12px 42px 12px 14px;
+    border-width:2px;
+    box-shadow:inset 0 1px rgba(255,255,255,.55),0 4px 10px rgba(57,31,8,.14);
+}
+.menu-category::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    opacity:.42;
+    background:
+      repeating-linear-gradient(135deg,rgba(255,255,255,.15) 0 2px,transparent 2px 8px),
+      radial-gradient(circle at 15% 40%,rgba(255,255,255,.38),transparent 32%);
+}
+.menu-category::after{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%) rotate(0deg);
+    transition:transform .35s ease,color .25s ease;
+}
+.menu-category.open::after{content:"－";transform:translateY(-50%) rotate(180deg)}
+.menu-category[data-category="PROFILE"]{background:linear-gradient(135deg,#eee6fa,#c9b7df);border-color:#8b70a8;color:#503b68}
+.menu-category[data-category="COLLECTION"]{background:linear-gradient(135deg,#f4dfb8,#b98745);border-color:#8a5a22;color:#55310b}
+.menu-category[data-category="ADVENTURE"]{background:linear-gradient(135deg,#f2c3a9,#b46042);border-color:#8a3f2d;color:#5c2418}
+.menu-category[data-category="SYSTEM"]{background:linear-gradient(135deg,#dce7e2,#8ca39a);border-color:#56736a;color:#29443c}
+.menu-category:hover{filter:brightness(1.05);transform:translateY(-2px) scale(1.01)}
+.menu-category.open{box-shadow:inset 0 1px rgba(255,255,255,.65),0 0 0 2px rgba(255,255,255,.35),0 7px 15px rgba(57,31,8,.2)}
+
+.menu-group{
+    display:block!important;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    padding:0 0 0 10px;
+    transform:translateY(-8px) scaleY(.96);
+    transform-origin:top;
+    transition:max-height .48s cubic-bezier(.22,.75,.25,1),opacity .28s ease,transform .38s ease,padding .38s ease;
+}
+.menu-group.open{
+    max-height:560px;
+    opacity:1;
+    padding:5px 0 8px 10px;
+    transform:none;
+}
+.menu-group.open .menu-item{animation:menuItemReveal .42s both}
+.menu-group.open .menu-item:nth-child(2){animation-delay:.045s}
+.menu-group.open .menu-item:nth-child(3){animation-delay:.09s}
+.menu-group.open .menu-item:nth-child(4){animation-delay:.135s}
+.menu-group.open .menu-item:nth-child(5){animation-delay:.18s}
+@keyframes menuItemReveal{from{opacity:0;transform:translateX(-16px) rotateX(-12deg)}to{opacity:1;transform:none}}
+
+.menu-item{
+    position:relative;
+    display:grid;
+    grid-template-columns:38px minmax(0,1fr) auto;
+    align-items:center;
+    gap:9px;
+    min-height:46px;
+    padding:6px 8px 6px 7px;
+    border:1px solid var(--item-border,#a98a64);
+    border-left:4px solid var(--item-accent,#8a5a22);
+    border-radius:11px;
+    background:
+      linear-gradient(135deg,var(--item-bg1,#fff7df),var(--item-bg2,#e9d1a5));
+    color:var(--item-ink,#4a2b0b);
+    box-shadow:inset 0 1px rgba(255,255,255,.58),0 3px 7px rgba(52,28,8,.12);
+    overflow:hidden;
+}
+.menu-item::before{content:""!important;position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,rgba(255,255,255,.11) 0 2px,transparent 2px 9px);opacity:.45}
+.menu-item::after{content:"";position:absolute;right:-22px;bottom:-28px;width:72px;height:72px;border:1px solid var(--item-accent,#8a5a22);border-radius:50%;opacity:.12}
+.menu-item:hover{border-left-color:var(--item-accent,#8a5a22);background:linear-gradient(135deg,var(--item-hover1,var(--item-bg1)),var(--item-hover2,var(--item-bg2)));transform:translateX(7px) scale(1.015);box-shadow:0 0 14px color-mix(in srgb,var(--item-accent,#8a5a22) 42%,transparent)}
+.menu-item.selected{color:#fff9e8;background:linear-gradient(135deg,var(--item-accent,#8a5a22),color-mix(in srgb,var(--item-accent,#8a5a22) 62%,#2b1808));border-color:#fff3c4;box-shadow:0 0 0 2px color-mix(in srgb,var(--item-accent,#8a5a22) 45%,transparent),0 0 16px color-mix(in srgb,var(--item-accent,#8a5a22) 58%,transparent)}
+.menu-item.selected .menu-thumb{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.62);transform:scale(1.07)}
+.menu-item.selected .menu-label::after{content:" NOW";font-size:9px;letter-spacing:1px;margin-left:6px;color:#fff3b7}
+.menu-thumb{position:relative;z-index:1;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.58);border:1px solid color-mix(in srgb,var(--item-accent,#8a5a22) 45%,#fff);font-size:19px;box-shadow:inset 0 1px rgba(255,255,255,.7);transition:.22s}
+.menu-label{position:relative;z-index:1;font-size:15px;font-weight:bold;letter-spacing:.4px;line-height:1.15}
+.menu-new{position:relative;z-index:1;display:inline-flex;align-items:center;padding:3px 6px;border-radius:999px;background:linear-gradient(135deg,#ff5d73,#c5224a);color:white;font:800 9px sans-serif;letter-spacing:.8px;box-shadow:0 0 9px rgba(223,41,78,.55);animation:newPulse 1.4s ease-in-out infinite}
+.menu-new[hidden]{display:none}
+@keyframes newPulse{50%{transform:scale(1.09);box-shadow:0 0 14px rgba(223,41,78,.82)}}
+
+/* Per-page item colors */
+.menu-item[data-page="CHARACTER"]{--item-bg1:#f4ead8;--item-bg2:#d9b875;--item-accent:#9a6a21}
+.menu-item[data-page="PREFERENCES"]{--item-bg1:#fff1f7;--item-bg2:#dbc7ed;--item-accent:#b1709b}
+.menu-item[data-page="MUSCLE"]{--item-bg1:#f4ded1;--item-bg2:#b98262;--item-accent:#8e3f2d}
+.menu-item[data-page="SKILL"]{--item-bg1:#eee7f7;--item-bg2:#b5a2d2;--item-accent:#74558e}
+.menu-item[data-page="TITLE"]{--item-bg1:#fff0bc;--item-bg2:#d4a74c;--item-accent:#9b6a10}
+.menu-item[data-page="ITEM BOX"]{--item-bg1:#f4dfbc;--item-bg2:#a86f36;--item-accent:#724216}
+.menu-item[data-page="GALLERY"]{--item-bg1:#eaf1ff;--item-bg2:#8ea7d2;--item-accent:#506d9c}
+.menu-item[data-page="DISNEY GUIDE"]{--item-bg1:#e6f6f3;--item-bg2:#79aaa4;--item-accent:#347c78}
+.menu-item[data-page="PERFORMANCE RECORD"]{--item-bg1:#f6e6df;--item-bg2:#b7786b;--item-accent:#84453c}
+.menu-item[data-page="ACHIEVEMENTS"]{--item-bg1:#fff0c1;--item-bg2:#d49f36;--item-accent:#996809}
+.menu-item[data-page="AONO GACHA"]{--item-bg1:#eee6ff;--item-bg2:#9779c7;--item-accent:#65429b}
+.menu-item[data-page="AONO COLLECTION"]{--item-bg1:#f1ecff;--item-bg2:#aa92d3;--item-accent:#7352a0}
+.menu-item[data-page="SECRET GAME"]{--item-bg1:#e8e3f5;--item-bg2:#55456f;--item-accent:#332440;--item-ink:#261b31}
+.menu-item[data-page="MESSAGE BOARD"]{--item-bg1:#eee5d9;--item-bg2:#a78f78;--item-accent:#6d513a}
+.menu-item[data-page="CONTACT"]{--item-bg1:#e8f2ef;--item-bg2:#8ca99f;--item-accent:#4f7568}
+.menu-item[data-page="UPDATE LOG"]{--item-bg1:#edf1df;--item-bg2:#9fb078;--item-accent:#687b3d}
+.menu-item[data-page="OPTION"]{--item-bg1:#e7ecea;--item-bg2:#849790;--item-accent:#506760}
+
+/* Ambient page particles */
+.page-particle-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3;border-radius:14px}
+.page-particle{position:absolute;left:var(--x);bottom:-24px;color:var(--particle-color);font-size:var(--size);opacity:0;filter:drop-shadow(0 0 5px currentColor);animation:ambientParticle var(--duration) linear forwards}
+@keyframes ambientParticle{0%{opacity:0;transform:translate3d(0,0,0) rotate(0deg) scale(.7)}15%{opacity:.6}75%{opacity:.42}100%{opacity:0;transform:translate3d(var(--drift),-620px,0) rotate(var(--spin)) scale(1.18)}}
+@media(max-width:900px),(prefers-reduced-motion:reduce){.page-particle-layer{display:none!important}}
+
 </style>
 
 </head>
@@ -1218,37 +1423,37 @@ DAYS
 </h2>
 
 
-<button class="menu-category open" type="button">📜 PROFILE</button>
+<button class="menu-category open" data-category="PROFILE" type="button"><span>📜 PROFILE</span></button>
 <div class="menu-group open">
-    <div class="menu-item">CHARACTER</div>
-    <div class="menu-item">PREFERENCES</div>
-    <div class="menu-item">MUSCLE</div>
-    <div class="menu-item">SKILL</div>
-    <div class="menu-item">TITLE</div>
+    <div class="menu-item" data-page="CHARACTER"><span class="menu-thumb">🧭</span><span class="menu-label">CHARACTER</span></div>
+    <div class="menu-item" data-page="PREFERENCES" data-new="true"><span class="menu-thumb">🎀</span><span class="menu-label">PREFERENCES</span><span class="menu-new">NEW</span></div>
+    <div class="menu-item" data-page="MUSCLE" data-new="true"><span class="menu-thumb">🏋</span><span class="menu-label">MUSCLE</span><span class="menu-new">NEW</span></div>
+    <div class="menu-item" data-page="SKILL"><span class="menu-thumb">✦</span><span class="menu-label">SKILL</span></div>
+    <div class="menu-item" data-page="TITLE"><span class="menu-thumb">👑</span><span class="menu-label">TITLE</span></div>
 </div>
 
-<button class="menu-category" type="button">🎒 COLLECTION</button>
+<button class="menu-category" data-category="COLLECTION" type="button"><span>🎒 COLLECTION</span></button>
 <div class="menu-group">
-    <div class="menu-item">ITEM BOX</div>
-    <div class="menu-item">GALLERY</div>
-    <div class="menu-item">DISNEY GUIDE</div>
-    <div class="menu-item">PERFORMANCE RECORD</div>
+    <div class="menu-item" data-page="ITEM BOX"><span class="menu-thumb">🗝</span><span class="menu-label">ITEM BOX</span></div>
+    <div class="menu-item" data-page="GALLERY"><span class="menu-thumb">▣</span><span class="menu-label">GALLERY</span></div>
+    <div class="menu-item" data-page="DISNEY GUIDE"><span class="menu-thumb">⚓</span><span class="menu-label">DISNEY GUIDE</span></div>
+    <div class="menu-item" data-page="PERFORMANCE RECORD"><span class="menu-thumb">♪</span><span class="menu-label">PERFORMANCE RECORD</span></div>
 </div>
 
-<button class="menu-category" type="button">⚔ ADVENTURE</button>
+<button class="menu-category" data-category="ADVENTURE" type="button"><span>⚔ ADVENTURE</span></button>
 <div class="menu-group">
-    <div class="menu-item">ACHIEVEMENTS</div>
-    <div class="menu-item">AONO GACHA</div>
-    <div class="menu-item">AONO COLLECTION</div>
-    <div class="menu-item">SECRET GAME</div>
+    <div class="menu-item" data-page="ACHIEVEMENTS"><span class="menu-thumb">🏅</span><span class="menu-label">ACHIEVEMENTS</span></div>
+    <div class="menu-item" data-page="AONO GACHA"><span class="menu-thumb">✧</span><span class="menu-label">AONO GACHA</span></div>
+    <div class="menu-item" data-page="AONO COLLECTION"><span class="menu-thumb">🃏</span><span class="menu-label">AONO COLLECTION</span></div>
+    <div class="menu-item" data-page="SECRET GAME"><span class="menu-thumb">?</span><span class="menu-label">SECRET GAME</span></div>
 </div>
 
-<button class="menu-category" type="button">📮 SYSTEM</button>
+<button class="menu-category" data-category="SYSTEM" type="button"><span>📮 SYSTEM</span></button>
 <div class="menu-group">
-    <div class="menu-item">MESSAGE BOARD</div>
-    <div class="menu-item">CONTACT</div>
-    <div class="menu-item">UPDATE LOG</div>
-    <div class="menu-item">OPTION</div>
+    <div class="menu-item" data-page="MESSAGE BOARD"><span class="menu-thumb">📜</span><span class="menu-label">MESSAGE BOARD</span></div>
+    <div class="menu-item" data-page="CONTACT"><span class="menu-thumb">✉</span><span class="menu-label">CONTACT</span></div>
+    <div class="menu-item" data-page="UPDATE LOG" data-new="true"><span class="menu-thumb">↻</span><span class="menu-label">UPDATE LOG</span><span class="menu-new">NEW</span></div>
+    <div class="menu-item" data-page="OPTION"><span class="menu-thumb">⚙</span><span class="menu-label">OPTION</span></div>
 </div>
 
 
@@ -1274,7 +1479,7 @@ DAYS
 
 <div id="currentLocation" class="current-location" aria-live="polite">
     <span class="current-location-label">CURRENT LOCATION</span>
-    <span class="current-location-path"><span id="locationCategory">HOME</span><span class="location-separator"> / </span><span id="locationPage">RECORD</span></span>
+    <span class="current-location-path"><button id="locationCategory" class="location-link" type="button" title="このカテゴリをメニューで開く">HOME</button><span class="location-separator"> / </span><button id="locationPage" class="location-link" type="button" title="このページをもう一度開く">RECORD</button></span>
 </div>
 
 <div id="content">
@@ -2287,6 +2492,19 @@ CHARACTER / FAVORITE / SKILL 追加
         💾 トレーニング記録の保存機能を廃止し、計算専用ページへ変更
     </div>
 </div>
+
+<div class="item-card">
+    <div class="item-title">📜 Ver.3.4</div>
+    <div class="item-text">
+        🎨 MENU CATEGORY & ITEM DESIGN UPDATE<br>
+        🖼 各MENU項目へ専用サムネイルを追加<br>
+        🎭 カテゴリ・ページごとに色と質感を個別設定<br>
+        📖 カテゴリ開閉アニメーションを強化<br>
+        🆕 新規・更新ページへNEWマークを追加<br>
+        ✨ ページテーマ別の装飾パーティクルを実装<br>
+        🧭 選択中ページのNOW表示を追加
+    </div>
+</div>
 `,
 };
 
@@ -2316,16 +2534,12 @@ const menuItems = document.querySelectorAll(".menu-item");
 let selectedIndex = 0;
 
 function updateMenu() {
-    menuItems.forEach(item => {
-        item.classList.remove("selected");
-        item.textContent = item.textContent.replace("▶ ", "");
-    });
+    menuItems.forEach(item => item.classList.remove("selected"));
+    const selected = menuItems[selectedIndex];
+    if(!selected) return;
+    selected.classList.add("selected");
 
-    menuItems[selectedIndex].classList.add("selected");
-    menuItems[selectedIndex].textContent =
-        "▶ " + menuItems[selectedIndex].textContent;
-
-    const group = menuItems[selectedIndex].closest(".menu-group");
+    const group = selected.closest(".menu-group");
     if (group && !group.classList.contains("open")) {
         menuCategories.forEach(category => {
             category.classList.remove("open");
@@ -2364,13 +2578,148 @@ const pageBackgrounds = {
     "OPTION":"home_character_background.png"
 };
 
+const pageThemes = {
+    "CHARACTER":"profile", "PREFERENCES":"preferences", "MUSCLE":"muscle", "SKILL":"music", "TITLE":"achievement",
+    "ITEM BOX":"collection", "GALLERY":"gallery", "DISNEY GUIDE":"disney-guide", "PERFORMANCE RECORD":"music",
+    "ACHIEVEMENTS":"achievement", "AONO GACHA":"gacha", "AONO COLLECTION":"gacha", "SECRET GAME":"gacha",
+    "MESSAGE BOARD":"message", "CONTACT":"message", "UPDATE LOG":"system", "OPTION":"system"
+};
+
+const cursorThemes = {
+    profile:{symbols:["✦","·","✧"],color:"#c99235"},
+    preferences:{symbols:["✿","✦","·"],color:"#c586aa"},
+    muscle:{symbols:["◆","✦","·"],color:"#a95736"},
+    collection:{symbols:["✦","◇","·"],color:"#bb8430"},
+    gallery:{symbols:["✧","✦","·"],color:"#7890c2"},
+    "disney-guide":{symbols:["✦","≈","·"],color:"#4e9ba3"},
+    music:{symbols:["♪","♫","·"],color:"#9a584d"},
+    achievement:{symbols:["★","✦","·"],color:"#c69a2e"},
+    gacha:{symbols:["✦","◇","⋆"],color:"#8a6ac2"},
+    message:{symbols:["✧","·","✦"],color:"#94715a"},
+    system:{symbols:["◆","·","✦"],color:"#72856f"}
+};
+let currentPageName="RECORD";
+let currentPageTheme="profile";
+let lastSparkAt=0;
+
+document.addEventListener("pointermove",(event)=>{
+    if(event.pointerType && event.pointerType!=="mouse") return;
+    const now=performance.now();
+    if(now-lastSparkAt<58) return;
+    lastSparkAt=now;
+    const theme=cursorThemes[currentPageTheme] || cursorThemes.profile;
+    const spark=document.createElement("span");
+    spark.className="cursor-spark";
+    spark.textContent=theme.symbols[Math.floor(Math.random()*theme.symbols.length)];
+    spark.style.left=event.clientX+"px";
+    spark.style.top=event.clientY+"px";
+    spark.style.setProperty("--spark-color",theme.color);
+    spark.style.setProperty("--spark-size",(11+Math.random()*7).toFixed(1)+"px");
+    spark.style.setProperty("--dx",(-10+Math.random()*20).toFixed(1)+"px");
+    spark.style.setProperty("--dy",(-18-Math.random()*12).toFixed(1)+"px");
+    spark.style.setProperty("--dx2",(-16+Math.random()*32).toFixed(1)+"px");
+    spark.style.setProperty("--dy2",(-32-Math.random()*18).toFixed(1)+"px");
+    document.body.appendChild(spark);
+    spark.addEventListener("animationend",()=>spark.remove(),{once:true});
+});
+
+function openMenuCategory(categoryName){
+    const target=[...menuCategories].find(button=>button.dataset.category===categoryName);
+    if(!target) return;
+    menuCategories.forEach(button=>{
+        const active=button===target;
+        button.classList.toggle("open",active);
+        button.nextElementSibling?.classList.toggle("open",active);
+    });
+    target.scrollIntoView({behavior:"smooth",block:"nearest"});
+    target.focus({preventScroll:true});
+}
+
+function openPageByName(pageName){
+    const index=[...menuItems].findIndex(item=>item.dataset.page===pageName);
+    if(index<0) return;
+    selectedIndex=index;
+    updateMenu();
+    openRecord();
+}
+
+document.getElementById("locationCategory").addEventListener("click",()=>{
+    openMenuCategory(pageCategories[currentPageName] || "PROFILE");
+});
+document.getElementById("locationPage").addEventListener("click",()=>{
+    if(currentPageName!=="RECORD") openPageByName(currentPageName);
+});
+
+
+
+const NEW_STORAGE_KEY="aonoViewedNewPagesV1";
+let viewedNewPages=[];
+try{viewedNewPages=JSON.parse(localStorage.getItem(NEW_STORAGE_KEY)||"[]");}catch(e){viewedNewPages=[];}
+function refreshNewBadges(){
+    document.querySelectorAll('.menu-item[data-new="true"]').forEach(item=>{
+        const badge=item.querySelector('.menu-new');
+        if(badge) badge.hidden=viewedNewPages.includes(item.dataset.page);
+    });
+}
+function markPageViewed(name){
+    const item=[...menuItems].find(el=>el.dataset.page===name && el.dataset.new==="true");
+    if(!item || viewedNewPages.includes(name)) return;
+    viewedNewPages.push(name);
+    localStorage.setItem(NEW_STORAGE_KEY,JSON.stringify(viewedNewPages));
+    refreshNewBadges();
+}
+refreshNewBadges();
+
+const ambientThemes={
+ profile:{symbols:["✦","·","✧"],color:"#c99235"},preferences:{symbols:["✿","✦","❀"],color:"#c586aa"},
+ muscle:{symbols:["◆","✦","▲"],color:"#b55a39"},collection:{symbols:["✦","◇","•"],color:"#bb8430"},
+ gallery:{symbols:["✧","✦","⋆"],color:"#7890c2"},"disney-guide":{symbols:["≈","✦","·"],color:"#4e9ba3"},
+ music:{symbols:["♪","♫","·"],color:"#9a584d"},achievement:{symbols:["★","✦","◆"],color:"#c69a2e"},
+ gacha:{symbols:["✦","◇","⋆"],color:"#8a6ac2"},message:{symbols:["✧","·","◇"],color:"#94715a"},
+ system:{symbols:["◆","·","✦"],color:"#72856f"}
+};
+let ambientTimer=null;
+function startAmbientParticles(themeName){
+    window.clearInterval(ambientTimer);
+    document.querySelector('.page-particle-layer')?.remove();
+    if(window.matchMedia('(max-width:900px), (prefers-reduced-motion: reduce)').matches) return;
+    const record=document.querySelector('.window.record');
+    if(!record) return;
+    const layer=document.createElement('div');
+    layer.className='page-particle-layer';
+    record.appendChild(layer);
+    const theme=ambientThemes[themeName]||ambientThemes.profile;
+    const spawn=()=>{
+        if(document.hidden || layer.childElementCount>16) return;
+        const p=document.createElement('span');
+        p.className='page-particle';
+        p.textContent=theme.symbols[Math.floor(Math.random()*theme.symbols.length)];
+        p.style.setProperty('--x',(3+Math.random()*94)+'%');
+        p.style.setProperty('--size',(10+Math.random()*11)+'px');
+        p.style.setProperty('--duration',(5.5+Math.random()*5)+'s');
+        p.style.setProperty('--drift',(-55+Math.random()*110)+'px');
+        p.style.setProperty('--spin',(-160+Math.random()*320)+'deg');
+        p.style.setProperty('--particle-color',theme.color);
+        layer.appendChild(p);
+        p.addEventListener('animationend',()=>p.remove(),{once:true});
+    };
+    for(let i=0;i<5;i++) setTimeout(spawn,i*160);
+    ambientTimer=setInterval(spawn,620);
+}
+
 function applyPagePresentation(name){
     const recordWindow=document.querySelector('.window.record');
     const category=pageCategories[name] || 'RECORD';
     const background=pageBackgrounds[name] || 'home_character_background.png';
+    const theme=pageThemes[name] || 'profile';
+    currentPageName=name;
+    currentPageTheme=theme;
     document.getElementById('locationCategory').textContent=category;
     document.getElementById('locationPage').textContent=name;
     recordWindow.style.setProperty('--page-bg','url("backgrounds/'+background+'")');
+    recordWindow.dataset.pageTheme=theme;
+    markPageViewed(name);
+    startAmbientParticles(theme);
 
     const content=document.getElementById('content');
     recordWindow.classList.remove('page-changing');
@@ -2386,10 +2735,7 @@ function applyPagePresentation(name){
 }
 
 function openRecord() {
-    const name = menuItems[selectedIndex]
-        .textContent
-        .replace("▶ ", "")
-        .trim();
+    const name = menuItems[selectedIndex]?.dataset.page;
 
     const content = document.getElementById("content");
 
