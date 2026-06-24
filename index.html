@@ -661,6 +661,20 @@ h2{
     color:#8b3f00;
 }
 
+
+/* SOUL CARD EXCHANGE */
+.soul-exchange-panel{margin-top:18px;padding:18px;border:3px solid #7452a6;border-radius:16px;background:linear-gradient(135deg,rgba(250,246,255,.94),rgba(225,211,247,.92));box-shadow:inset 0 0 18px rgba(255,255,255,.9),0 6px 16px rgba(58,35,88,.22)}
+.exchange-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.62);border:1px solid rgba(102,66,155,.28)}
+.exchange-soul{font-size:21px;font-weight:bold;color:#5d378f}.exchange-controls{display:grid;grid-template-columns:minmax(180px,1fr) minmax(150px,.55fr);gap:10px;margin-bottom:15px}
+.exchange-input,.exchange-select{width:100%;padding:10px 12px;border:2px solid #9f84c8;border-radius:10px;background:#fffdfd;color:#3a2850;font:inherit}
+.exchange-price-list{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 16px;font-size:13px}.exchange-price-list span{padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.68);border:1px solid rgba(98,65,144,.25)}
+.exchange-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:13px;max-height:560px;overflow-y:auto;padding:5px}
+.exchange-card{position:relative;display:flex;flex-direction:column;min-height:230px;padding:14px;border:2px solid #977bc1;border-radius:14px;background:rgba(255,255,255,.78);box-shadow:0 5px 12px rgba(62,38,91,.15)}
+.exchange-card.owned{opacity:.62;filter:grayscale(.35)}.exchange-card .card-text{flex:1;margin:8px 0 12px;font-size:14px}.exchange-price{margin:8px 0;font-size:18px;font-weight:bold;color:#6b3fa0}
+.exchange-button{width:100%;margin-top:auto;padding:9px 10px;border:2px solid #55327d;border-radius:10px;color:#fff;background:linear-gradient(135deg,#7650a8,#4d2b73);font:700 15px inherit;cursor:pointer;transition:.2s}.exchange-button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 14px rgba(164,115,226,.7)}.exchange-button:disabled{cursor:not-allowed;opacity:.48}
+.exchange-message{margin-top:13px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.7);font-weight:bold;text-align:center}.exchange-empty{grid-column:1/-1;padding:25px;text-align:center;border:2px dashed #9b83bd;border-radius:12px;background:rgba(255,255,255,.55)}
+@media(max-width:620px){.exchange-controls{grid-template-columns:1fr}.exchange-grid{grid-template-columns:1fr;max-height:520px}}
+
 .collection-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
@@ -2244,6 +2258,28 @@ ${galleryImages}
     <div id="gachaResult" class="gacha-result">
         まだ回されていない……
     </div>
+
+    <div class="soul-exchange-panel">
+        <div class="item-title">🔮 SOUL CARD EXCHANGE</div>
+        <div class="item-text">SOULを消費して、未所持カードを直接交換できます。</div>
+        <div class="exchange-summary">
+            <div class="exchange-soul">所持SOUL：<span id="exchangeSoul">0</span></div>
+            <div>交換済みカードはCOLLECTIONへ保存されます。</div>
+        </div>
+        <div class="exchange-price-list">
+            <span>N：100</span><span>R：250</span><span>SR：600</span><span>SSR：1,500</span><span>UR：3,000</span><span>SECRET：10,000</span>
+        </div>
+        <div class="exchange-controls">
+            <input id="exchangeSearch" class="exchange-input" type="search" placeholder="カード名・No.で検索" oninput="renderSoulExchange()">
+            <select id="exchangeRarity" class="exchange-select" onchange="renderSoulExchange()">
+                <option value="ALL">すべてのレアリティ</option>
+                <option value="N">N</option><option value="R">R</option><option value="SR">SR</option>
+                <option value="SSR">SSR</option><option value="UR">UR</option><option value="SECRET">SECRET</option>
+            </select>
+        </div>
+        <div id="exchangeList" class="exchange-grid"></div>
+        <div id="exchangeMessage" class="exchange-message">交換するカードを選んでください。</div>
+    </div>
 </div>
 
 </div>
@@ -2611,6 +2647,17 @@ CHARACTER / FAVORITE / SKILL 追加
         🔊 MENU・カテゴリ・ボタン操作へ効果音を追加<br>
         🎚 効果音ON / OFF切り替えボタンを追加
     </div>
+</div>
+
+<div class="item-card">
+<div class="item-title">📜 Ver.3.4</div>
+<div class="item-text">
+🔮 SOUL CARD EXCHANGE 実装<br>
+💰 レアリティ別SOUL価格を追加<br>
+🔍 カード名・No.検索とレアリティ絞り込みに対応<br>
+✅ 所持SOUL不足・獲得済みカードの交換防止<br>
+📚 交換したカードをAONO COLLECTIONへ自動保存
+</div>
 </div>
 `,
 };
@@ -2989,6 +3036,7 @@ function openRecord() {
 
     if(name === "AONO GACHA"){
         updateGachaInfo();
+        renderSoulExchange();
     }
 
     if(name === "AONO COLLECTION"){
@@ -4347,6 +4395,78 @@ function updateGachaInfo(){
     if(countEl) countEl.textContent = gachaData.count;
     if(soulEl) soulEl.textContent = gachaData.soul;
     if(rateEl) rateEl.textContent = `${gachaData.owned.length} / ${aonoCards.length}`;
+}
+
+
+const soulExchangePrices = { N:100, R:250, SR:600, SSR:1500, UR:3000, SECRET:10000 };
+
+function renderSoulExchange(){
+    const list = document.getElementById("exchangeList");
+    if(!list) return;
+
+    const soulEl = document.getElementById("exchangeSoul");
+    if(soulEl) soulEl.textContent = gachaData.soul.toLocaleString("ja-JP");
+
+    const search = (document.getElementById("exchangeSearch")?.value || "").trim().toLowerCase();
+    const rarity = document.getElementById("exchangeRarity")?.value || "ALL";
+
+    const filtered = aonoCards.filter(card => {
+        const number = String(card.id).padStart(3,"0");
+        const matchesSearch = !search || card.name.toLowerCase().includes(search) || number.includes(search);
+        const matchesRarity = rarity === "ALL" || card.rarity === rarity;
+        return matchesSearch && matchesRarity;
+    });
+
+    if(filtered.length === 0){
+        list.innerHTML = '<div class="exchange-empty">条件に一致するカードがありません。</div>';
+        return;
+    }
+
+    list.innerHTML = filtered.map(card => {
+        const owned = gachaData.owned.includes(card.id);
+        const price = soulExchangePrices[card.rarity];
+        const affordable = gachaData.soul >= price;
+        const buttonText = owned ? "獲得済み" : affordable ? `${price.toLocaleString("ja-JP")} SOULで交換` : `SOUL不足（${price.toLocaleString("ja-JP")}）`;
+        return `
+            <div class="exchange-card ${owned ? "owned" : ""}">
+                <div class="rarity ${getRarityClass(card.rarity)}">${card.rarity}</div>
+                <div class="card-no">No.${String(card.id).padStart(3,"0")}</div>
+                <div class="card-name">${card.name}</div>
+                <div class="card-text">${card.text}</div>
+                <div class="exchange-price">${price.toLocaleString("ja-JP")} SOUL</div>
+                <button class="exchange-button" type="button" onclick="exchangeAonoCard(${card.id})" ${owned || !affordable ? "disabled" : ""}>${buttonText}</button>
+            </div>`;
+    }).join("");
+}
+
+function exchangeAonoCard(cardId){
+    const card = aonoCards.find(item => item.id === cardId);
+    const message = document.getElementById("exchangeMessage");
+    if(!card) return;
+
+    if(gachaData.owned.includes(card.id)){
+        if(message) message.textContent = "このカードはすでに獲得済みです。";
+        return;
+    }
+
+    const price = soulExchangePrices[card.rarity];
+    if(gachaData.soul < price){
+        if(message) message.textContent = `SOULが不足しています。必要SOUL：${price.toLocaleString("ja-JP")}`;
+        return;
+    }
+
+    const ok = confirm(`${card.name} を ${price.toLocaleString("ja-JP")} SOULで交換しますか？`);
+    if(!ok) return;
+
+    gachaData.soul -= price;
+    gachaData.owned.push(card.id);
+    saveGachaData();
+    updateGachaInfo();
+    renderSoulExchange();
+
+    if(message){
+        message.innerHTML = `🌟 No.${String(card.id).padStart(3,"0")} ${card.name} を獲得しました。`;
+    }
 }
 
 function renderAonoCollection(){
