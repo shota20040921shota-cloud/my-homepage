@@ -1289,7 +1289,6 @@ display:none !important;
 .menu-item[data-page="ACHIEVEMENTS"]{--item-bg1:#fff0c1;--item-bg2:#d49f36;--item-accent:#996809}
 .menu-item[data-page="AONO GACHA"]{--item-bg1:#eee6ff;--item-bg2:#9779c7;--item-accent:#65429b}
 .menu-item[data-page="AONO COLLECTION"]{--item-bg1:#f1ecff;--item-bg2:#aa92d3;--item-accent:#7352a0}
-.menu-item[data-page="SECRET GAME"]{--item-bg1:#e8e3f5;--item-bg2:#55456f;--item-accent:#332440;--item-ink:#261b31}
 .menu-item[data-page="MESSAGE BOARD"]{--item-bg1:#eee5d9;--item-bg2:#a78f78;--item-accent:#6d513a}
 .menu-item[data-page="CONTACT"]{--item-bg1:#e8f2ef;--item-bg2:#8ca99f;--item-accent:#4f7568}
 .menu-item[data-page="UPDATE LOG"]{--item-bg1:#edf1df;--item-bg2:#9fb078;--item-accent:#687b3d}
@@ -1300,6 +1299,88 @@ display:none !important;
 .page-particle{position:absolute;left:var(--x);bottom:-24px;color:var(--particle-color);font-size:var(--size);opacity:0;filter:drop-shadow(0 0 5px currentColor);animation:ambientParticle var(--duration) linear forwards}
 @keyframes ambientParticle{0%{opacity:0;transform:translate3d(0,0,0) rotate(0deg) scale(.7)}15%{opacity:.6}75%{opacity:.42}100%{opacity:0;transform:translate3d(var(--drift),-620px,0) rotate(var(--spin)) scale(1.18)}}
 @media(max-width:900px),(prefers-reduced-motion:reduce){.page-particle-layer{display:none!important}}
+
+
+
+/* =============================
+   SECRET GATE / UI SOUND SYSTEM
+============================= */
+.sound-toggle{
+    position:fixed;
+    right:22px;
+    bottom:48px;
+    z-index:10020;
+    width:44px;
+    height:44px;
+    border:2px solid #704719;
+    border-radius:50%;
+    background:linear-gradient(145deg,#fff3c9,#c9974d);
+    color:#3d2205;
+    font-size:20px;
+    cursor:pointer;
+    box-shadow:0 5px 14px rgba(40,20,0,.35),inset 0 0 8px rgba(255,255,255,.7);
+    transition:.2s transform,.2s filter;
+}
+.sound-toggle:hover{transform:translateY(-2px) scale(1.05);filter:brightness(1.08)}
+.sound-toggle:active{transform:translateY(1px) scale(.96)}
+
+.secret-gate{
+    position:fixed;
+    inset:0;
+    z-index:12000;
+    display:grid;
+    place-items:center;
+    padding:20px;
+    background:rgba(18,10,25,.72);
+    backdrop-filter:blur(8px);
+    opacity:0;
+    visibility:hidden;
+    transition:.25s opacity,.25s visibility;
+}
+.secret-gate.open{opacity:1;visibility:visible}
+.secret-gate-panel{
+    width:min(460px,92vw);
+    padding:28px;
+    border:3px solid #b894d4;
+    border-radius:20px;
+    text-align:center;
+    color:#f8edff;
+    background:
+        radial-gradient(circle at 50% 0,rgba(183,129,232,.28),transparent 42%),
+        linear-gradient(145deg,#332541,#160f20);
+    box-shadow:0 0 0 5px rgba(255,255,255,.08),0 0 40px rgba(171,102,226,.45);
+    transform:translateY(14px) scale(.97);
+    transition:.25s transform;
+}
+.secret-gate.open .secret-gate-panel{transform:none}
+.secret-gate-symbol{font-size:44px;text-shadow:0 0 18px #d49fff;margin-bottom:8px}
+.secret-gate-panel h3{font-size:25px;letter-spacing:4px;margin:4px 0 8px}
+.secret-gate-panel p{font-size:14px;line-height:1.7;color:#d9c7e5}
+.secret-password{
+    width:100%;
+    margin:16px 0 8px;
+    padding:12px 14px;
+    border:2px solid #9f7bbb;
+    border-radius:10px;
+    background:#f8efff;
+    color:#26172f;
+    font:700 18px inherit;
+    text-align:center;
+    letter-spacing:3px;
+    outline:none;
+}
+.secret-password:focus{box-shadow:0 0 18px rgba(211,158,255,.7)}
+.secret-gate-actions{display:flex;gap:10px;margin-top:14px}
+.secret-gate-actions button{
+    flex:1;padding:11px;border-radius:10px;border:2px solid #9f7bbb;
+    font:700 15px inherit;cursor:pointer
+}
+.secret-enter{background:linear-gradient(135deg,#c99deb,#745294);color:#fff}
+.secret-cancel{background:#ece2f1;color:#3c2947}
+.secret-error{min-height:1.4em;margin-top:10px!important;color:#ffb8c8!important;font-weight:bold}
+.title{cursor:default}
+
+@media(max-width:700px){.sound-toggle{right:12px;bottom:12px}}
 
 </style>
 
@@ -1445,7 +1526,6 @@ DAYS
     <div class="menu-item" data-page="ACHIEVEMENTS"><span class="menu-thumb">🏅</span><span class="menu-label">ACHIEVEMENTS</span></div>
     <div class="menu-item" data-page="AONO GACHA"><span class="menu-thumb">✧</span><span class="menu-label">AONO GACHA</span></div>
     <div class="menu-item" data-page="AONO COLLECTION"><span class="menu-thumb">🃏</span><span class="menu-label">AONO COLLECTION</span></div>
-    <div class="menu-item" data-page="SECRET GAME"><span class="menu-thumb">?</span><span class="menu-label">SECRET GAME</span></div>
 </div>
 
 <button class="menu-category" data-category="SYSTEM" type="button"><span>📮 SYSTEM</span></button>
@@ -1504,6 +1584,23 @@ ENTERまたはクリックで閲覧できます。
 </div>
 
 
+
+
+<button id="soundToggle" class="sound-toggle" type="button" aria-label="効果音を切り替える" title="効果音 ON/OFF">🔊</button>
+
+<div id="secretGate" class="secret-gate" aria-hidden="true">
+    <div class="secret-gate-panel" role="dialog" aria-modal="true" aria-labelledby="secretGateTitle">
+        <div class="secret-gate-symbol">✦</div>
+        <h3 id="secretGateTitle">SEALED RECORD</h3>
+        <p>この記録は封印されています。<br>パスワードを入力してください。</p>
+        <input id="secretPassword" class="secret-password" type="password" autocomplete="off" maxlength="32" placeholder="PASSWORD">
+        <p id="secretError" class="secret-error"></p>
+        <div class="secret-gate-actions">
+            <button id="secretCancel" class="secret-cancel" type="button">CANCEL</button>
+            <button id="secretEnter" class="secret-enter" type="button">UNSEAL</button>
+        </div>
+    </div>
+</div>
 
 <div class="footer">
 
@@ -2505,16 +2602,160 @@ CHARACTER / FAVORITE / SKILL 追加
         🧭 選択中ページのNOW表示を追加
     </div>
 </div>
+
+<div class="item-card">
+    <div class="item-title">📜 Ver.3.5</div>
+    <div class="item-text">
+        🔐 SECRET GAMEを通常MENUから非表示化<br>
+        🗝 パスワード式の封印解除システムを実装<br>
+        🔊 MENU・カテゴリ・ボタン操作へ効果音を追加<br>
+        🎚 効果音ON / OFF切り替えボタンを追加
+    </div>
+</div>
 `,
 };
 
     
+
+
+/* =============================
+   UI SOUND SYSTEM
+============================= */
+const SOUND_STORAGE_KEY="aonoUiSoundEnabledV1";
+let soundEnabled=localStorage.getItem(SOUND_STORAGE_KEY)!=="false";
+let uiAudioContext=null;
+
+function getUiAudioContext(){
+    if(!uiAudioContext){
+        const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+        if(!AudioContextClass) return null;
+        uiAudioContext=new AudioContextClass();
+    }
+    if(uiAudioContext.state==="suspended") uiAudioContext.resume();
+    return uiAudioContext;
+}
+
+function playUiTone(frequency,duration=0.07,volume=0.045,type="sine",delay=0){
+    if(!soundEnabled) return;
+    const ctx=getUiAudioContext();
+    if(!ctx) return;
+    const start=ctx.currentTime+delay;
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.type=type;
+    osc.frequency.setValueAtTime(frequency,start);
+    gain.gain.setValueAtTime(0.0001,start);
+    gain.gain.exponentialRampToValueAtTime(volume,start+0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start+duration+0.02);
+}
+
+function playUiSound(kind="click"){
+    if(!soundEnabled) return;
+    if(kind==="open"){
+        playUiTone(360,.075,.035,"triangle");
+        playUiTone(540,.10,.035,"triangle",.055);
+    }else if(kind==="close"){
+        playUiTone(430,.07,.032,"triangle");
+        playUiTone(280,.09,.03,"triangle",.045);
+    }else if(kind==="page"){
+        playUiTone(420,.08,.038,"sine");
+        playUiTone(650,.11,.035,"sine",.055);
+        playUiTone(820,.08,.02,"triangle",.11);
+    }else if(kind==="success"){
+        playUiTone(520,.09,.04,"sine");
+        playUiTone(760,.12,.04,"sine",.07);
+        playUiTone(1040,.16,.035,"triangle",.14);
+    }else if(kind==="error"){
+        playUiTone(180,.12,.045,"sawtooth");
+        playUiTone(145,.14,.035,"sawtooth",.07);
+    }else{
+        playUiTone(480,.055,.025,"triangle");
+    }
+}
+
+const soundToggle=document.getElementById("soundToggle");
+function updateSoundToggle(){
+    soundToggle.textContent=soundEnabled?"🔊":"🔇";
+    soundToggle.setAttribute("aria-pressed",String(soundEnabled));
+    soundToggle.title=soundEnabled?"効果音をOFFにする":"効果音をONにする";
+}
+soundToggle.addEventListener("click",()=>{
+    soundEnabled=!soundEnabled;
+    localStorage.setItem(SOUND_STORAGE_KEY,String(soundEnabled));
+    updateSoundToggle();
+    if(soundEnabled) playUiSound("success");
+});
+updateSoundToggle();
+
+/* =============================
+   PASSWORD SECRET GATE
+   静的HTMLのため完全なセキュリティではなく、非公開導線としての実装。
+============================= */
+const SECRET_PASSWORD="ONEMU";
+const secretGate=document.getElementById("secretGate");
+const secretPassword=document.getElementById("secretPassword");
+const secretError=document.getElementById("secretError");
+
+function openSecretGate(){
+    secretGate.classList.add("open");
+    secretGate.setAttribute("aria-hidden","false");
+    secretPassword.value="";
+    secretError.textContent="";
+    window.setTimeout(()=>secretPassword.focus(),80);
+    playUiSound("open");
+}
+function closeSecretGate(){
+    secretGate.classList.remove("open");
+    secretGate.setAttribute("aria-hidden","true");
+    secretError.textContent="";
+    playUiSound("close");
+}
+function unlockSecretGame(){
+    if(secretPassword.value.trim().toUpperCase()===SECRET_PASSWORD){
+        secretError.textContent="封印を解除しました。";
+        playUiSound("success");
+        window.setTimeout(()=>{location.href="onemu-game.html";},420);
+    }else{
+        secretError.textContent="パスワードが違います。";
+        playUiSound("error");
+        secretPassword.select();
+    }
+}
+document.getElementById("secretEnter").addEventListener("click",unlockSecretGame);
+document.getElementById("secretCancel").addEventListener("click",closeSecretGate);
+secretPassword.addEventListener("keydown",e=>{
+    if(e.key==="Enter") unlockSecretGame();
+    if(e.key==="Escape") closeSecretGate();
+});
+secretGate.addEventListener("click",e=>{if(e.target===secretGate) closeSecretGate();});
+document.addEventListener("keydown",e=>{
+    if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==="s"){
+        e.preventDefault();
+        openSecretGate();
+    }
+});
+let secretTitleClicks=0;
+let secretTitleTimer=null;
+document.querySelector(".title")?.addEventListener("click",()=>{
+    secretTitleClicks++;
+    clearTimeout(secretTitleTimer);
+    secretTitleTimer=setTimeout(()=>secretTitleClicks=0,1800);
+    if(secretTitleClicks>=5){
+        secretTitleClicks=0;
+        openSecretGate();
+    }
+});
+
 const menuCategories = document.querySelectorAll(".menu-category");
 
 menuCategories.forEach(category => {
     category.addEventListener("click", () => {
         const group = category.nextElementSibling;
         const willOpen = !category.classList.contains("open");
+        playUiSound(willOpen ? "open" : "close");
 
         menuCategories.forEach(other => {
             other.classList.remove("open");
@@ -2554,7 +2795,7 @@ function updateMenu() {
 const pageCategories = {
     "CHARACTER":"PROFILE", "PREFERENCES":"PROFILE", "MUSCLE":"PROFILE", "SKILL":"PROFILE", "TITLE":"PROFILE",
     "ITEM BOX":"COLLECTION", "GALLERY":"COLLECTION", "DISNEY GUIDE":"COLLECTION", "PERFORMANCE RECORD":"COLLECTION",
-    "ACHIEVEMENTS":"ADVENTURE", "AONO GACHA":"ADVENTURE", "AONO COLLECTION":"ADVENTURE", "SECRET GAME":"ADVENTURE",
+    "ACHIEVEMENTS":"ADVENTURE", "AONO GACHA":"ADVENTURE", "AONO COLLECTION":"ADVENTURE",
     "MESSAGE BOARD":"SYSTEM", "CONTACT":"SYSTEM", "UPDATE LOG":"SYSTEM", "OPTION":"SYSTEM"
 };
 
@@ -2571,7 +2812,6 @@ const pageBackgrounds = {
     "ACHIEVEMENTS":"achievements_background.png",
     "AONO GACHA":"aono_gacha_background.png",
     "AONO COLLECTION":"aono_gacha_background.png",
-    "SECRET GAME":"aono_gacha_background.png",
     "MESSAGE BOARD":"message_board_background.png",
     "CONTACT":"message_board_background.png",
     "UPDATE LOG":"home_character_background.png",
@@ -2581,7 +2821,7 @@ const pageBackgrounds = {
 const pageThemes = {
     "CHARACTER":"profile", "PREFERENCES":"preferences", "MUSCLE":"muscle", "SKILL":"music", "TITLE":"achievement",
     "ITEM BOX":"collection", "GALLERY":"gallery", "DISNEY GUIDE":"disney-guide", "PERFORMANCE RECORD":"music",
-    "ACHIEVEMENTS":"achievement", "AONO GACHA":"gacha", "AONO COLLECTION":"gacha", "SECRET GAME":"gacha",
+    "ACHIEVEMENTS":"achievement", "AONO GACHA":"gacha", "AONO COLLECTION":"gacha",
     "MESSAGE BOARD":"message", "CONTACT":"message", "UPDATE LOG":"system", "OPTION":"system"
 };
 
@@ -2934,6 +3174,7 @@ function initializeFavoriteTabs(){
 
 menuItems.forEach((item, index) => {
     item.addEventListener("click", () => {
+        playUiSound("page");
         selectedIndex = index;
         updateMenu();
         openRecord();
@@ -2942,18 +3183,21 @@ menuItems.forEach((item, index) => {
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowUp") {
+        playUiSound("click");
         selectedIndex--;
         if (selectedIndex < 0) selectedIndex = menuItems.length - 1;
         updateMenu();
     }
 
     if (e.key === "ArrowDown") {
+        playUiSound("click");
         selectedIndex++;
         if (selectedIndex >= menuItems.length) selectedIndex = 0;
         updateMenu();
     }
 
     if (e.key === "Enter") {
+        playUiSound("page");
         openRecord();
     }
 });
@@ -2961,18 +3205,13 @@ document.addEventListener("keydown", (e) => {
 updateMenu();
 applyPagePresentation("CHARACTER");
 
-let secretCode = "";
 
-document.addEventListener("keydown", (e) => {
-    secretCode += e.key.toLowerCase();
-
-    if (secretCode.includes("onemu")) {
-        location.href = "onemu-game.html";
-    }
-
-    if (secretCode.length > 20) {
-        secretCode = "";
-    }
+// 通常ボタン・タブ・現在地リンクのクリック音
+document.addEventListener("click",event=>{
+    const target=event.target.closest("button, .location-link, .favorite-tab, a");
+    if(!target) return;
+    if(target.matches(".menu-category,.menu-item,#soundToggle,#secretEnter,#secretCancel")) return;
+    playUiSound("click");
 });
  const aonoCards = [
 {
