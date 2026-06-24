@@ -6,6 +6,12 @@
 <title>
 THE RECORD OF AONO SHOTA
 </title>
+<link rel="preload" as="image" href="backgrounds/home_character_background.png">
+<link rel="preload" as="image" href="backgrounds/preferences_background.png">
+<link rel="preload" as="image" href="backgrounds/muscle_background.png">
+<link rel="preload" as="image" href="backgrounds/item_box_background.png">
+<link rel="preload" as="image" href="backgrounds/gallery_background.png">
+
 
 
 <style>
@@ -1029,10 +1035,12 @@ display:none !important;
     position:relative;
     isolation:isolate;
     background:
-        linear-gradient(rgba(255,248,225,.42),rgba(239,216,173,.50)),
+        linear-gradient(rgba(255,248,225,.20),rgba(239,216,173,.28)),
         var(--page-bg) center / cover no-repeat;
     transition:background-image .35s ease, box-shadow .35s ease;
     background-color:#d9b678;
+    background-attachment:local;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.10),0 0 15px #593000;
 }
 .record::before{
     content:"";
@@ -1041,7 +1049,7 @@ display:none !important;
     z-index:-1;
     border-radius:10px;
     pointer-events:none;
-    background:radial-gradient(circle at center,rgba(255,253,239,.10),rgba(79,42,8,.05));
+    background:radial-gradient(circle at center,rgba(255,253,239,.04),rgba(79,42,8,.02));
 }
 .current-location{
     position:sticky;
@@ -2627,7 +2635,16 @@ CHARACTER / FAVORITE / SKILL 追加
 </div>
 
 <div class="item-card">
-    <div class="item-title">📜 Ver.3.4</div>
+    <div class="item-title">📜 Ver.3.5</div>
+<div class="item-text">
+🖼 背景画像先読み機能を追加<br>
+✨ ページ背景の視認性を向上<br>
+⚡ ページ切替時の背景表示を高速化
+</div>
+</div>
+
+<div class="item-card">
+<div class="item-title">📜 Ver.3.4</div>
     <div class="item-text">
         🎨 MENU CATEGORY & ITEM DESIGN UPDATE<br>
         🖼 各MENU項目へ専用サムネイルを追加<br>
@@ -2956,6 +2973,36 @@ function markPageViewed(name){
     refreshNewBadges();
 }
 refreshNewBadges();
+
+const pageBackgroundFiles=[
+    "home_character_background.png",
+    "preferences_background.png",
+    "muscle_background.png",
+    "item_box_background.png",
+    "gallery_background.png",
+    "disney_guide_background.png",
+    "performance_record_background.png",
+    "achievements_background.png",
+    "aono_gacha_background.png",
+    "message_board_background.png"
+];
+
+const preloadedPageBackgrounds=new Map();
+function preloadPageBackgrounds(){
+    pageBackgroundFiles.forEach(filename=>{
+        const image=new Image();
+        image.decoding="async";
+        image.src=`backgrounds/${filename}`;
+        image.onload=()=>preloadedPageBackgrounds.set(filename,image);
+        image.onerror=()=>console.warn(`背景画像を読み込めませんでした: ${filename}`);
+    });
+}
+
+if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded",preloadPageBackgrounds,{once:true});
+}else{
+    preloadPageBackgrounds();
+}
 
 const ambientThemes={
  profile:{symbols:["✦","·","✧"],color:"#c99235"},preferences:{symbols:["✿","✦","❀"],color:"#c586aa"},
