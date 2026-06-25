@@ -178,11 +178,13 @@
 
 /* PROFILE：本のページ */
 .v40-transition-profile{background:radial-gradient(circle,#fff7d2 0,#c99f5d 58%,#60401e 100%)}
-.v40-book{position:relative;width:min(430px,72%);height:250px;perspective:1100px;filter:drop-shadow(0 18px 22px rgba(30,15,2,.42))}
+.v40-book{position:relative;width:min(430px,72%);height:250px;perspective:1100px;filter:drop-shadow(0 18px 22px rgba(30,15,2,.42));isolation:isolate}
 .v40-book-base,.v40-book-page{position:absolute;inset:0;border:4px solid #704313;border-radius:8px;background:linear-gradient(90deg,#ead09a 0 49.4%,#8b6028 49.7% 50.3%,#f5dfad 50.6%);transform-origin:left center}
-.v40-book-base::after{content:"THE RECORD";position:absolute;inset:0;display:grid;place-items:center;color:#734817;font-weight:bold;letter-spacing:7px}
-.v40-book-page{left:50%;width:50%;background:linear-gradient(100deg,#fff0c8,#d4a969);animation:v40PageFlip .78s cubic-bezier(.18,.78,.25,1) both}
+.v40-book-base{z-index:1}
+.v40-book-page{left:50%;width:50%;z-index:2;background:linear-gradient(100deg,#fff0c8,#d4a969);animation:v40PageFlip .78s cubic-bezier(.18,.78,.25,1) both}
+.v40-book-title{position:absolute;inset:0;z-index:3;display:grid;place-items:center;color:#734817;font-weight:bold;letter-spacing:7px;white-space:nowrap;pointer-events:none;text-shadow:0 1px 0 rgba(255,247,210,.75);animation:v40BookTitle .78s ease both}
 @keyframes v40PageFlip{0%{transform:rotateY(0)}100%{transform:rotateY(-178deg)}}
+@keyframes v40BookTitle{0%,32%{opacity:0}58%,100%{opacity:1}}
 
 /* COLLECTION：宝箱 */
 .v40-transition-collection{background:radial-gradient(circle,#fce6a0 0,#7b4a17 52%,#211307 100%)}
@@ -402,7 +404,7 @@
         const label = `${getCategoryForPage(pageName)} / ${pageName}`;
 
         const effects = {
-            profile: '<div class="v40-book"><div class="v40-book-base"></div><div class="v40-book-page"></div></div>',
+            profile: '<div class="v40-book"><div class="v40-book-base"></div><div class="v40-book-page"></div><div class="v40-book-title">THE RECORD</div></div>',
             collection: '<div class="v40-chest"><div class="v40-chest-light"></div><div class="v40-chest-body"></div><div class="v40-chest-lid"></div></div>',
             adventure: '<div class="v40-sword"></div><div class="v40-slash"></div>',
             system: '<div class="v40-magic-circle"></div>',
